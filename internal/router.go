@@ -12,6 +12,10 @@ func SetUp(s *Server) {
 
 	// account
 	api.GET("/account/balance", s.GetBalanceValid, s.GetBalance)
+	api.GET("/account/balance/pending", s.GetBalanceValid, s.GetPendingBalance)
+
+	// block
+	api.GET("/block/header", s.GetBlockHeaderByNumber)
 }
 
 func (s *Server) Start() error {
