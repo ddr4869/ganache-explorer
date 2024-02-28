@@ -16,6 +16,9 @@ func SetUp(s *Server) {
 
 	// block
 	api.GET("/block/header", s.GetBlockHeaderByNumber)
+
+	// transaction
+	api.GET("/transaction", s.GetTransaction)
 }
 
 func (s *Server) Start() error {
