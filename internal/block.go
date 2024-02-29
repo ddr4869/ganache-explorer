@@ -15,23 +15,22 @@ func (s *Server) GetLatestBlockNumber(c *gin.Context) {
 	if err != nil {
 		log.Fatal(err)
 	}
-	log.Printf("BlockNumber: %v\n", header.Number)
-	BlockNumber := header.Number
+	blockNumber := header.Number
 	c.JSON(200, gin.H{
-		"block_number": BlockNumber,
+		"block_number": blockNumber,
 	})
 }
 
 func (s *Server) GetBlockByNumber(c *gin.Context) {
 	req := c.MustGet("req").(dto.GetBlockHeaderByNumberRequest)
-	BlockNumber := req.BlockNumber
-	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(int64(BlockNumber)))
+	blockNumber := req.BlockNumber
+	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(int64(blockNumber)))
 	if err != nil {
 		log.Fatal(err)
 	}
 
 	c.JSON(http.StatusOK, dto.GetBlockHeaderByNumberResponse{
-		BlockNumber: BlockNumber,
+		BlockNumber: blockNumber,
 		Block: dto.Block{
 			Number:      block.Number().Uint64(),
 			GasLimit:    block.GasLimit(),

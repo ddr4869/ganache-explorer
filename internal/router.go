@@ -18,7 +18,7 @@ func SetUp(s *Server) {
 	api.GET("/block/header", s.GetBlockByNumberValid, s.GetBlockByNumber)
 	api.GET("/block/header/latest", s.GetLatestBlockNumber)
 	// transaction
-	api.GET("/transaction", s.GetTransaction)
+	api.GET("/transaction", s.GetTransactionValid, s.GetTransaction)
 }
 
 func (s *Server) Start() error {

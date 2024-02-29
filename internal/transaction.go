@@ -4,20 +4,18 @@ import (
 	"context"
 	"fmt"
 	"log"
+	"math/big"
 
+	"github.com/ddr4869/ether-go/internal/dto"
 	"github.com/ethereum/go-ethereum/core/types"
 	"github.com/gin-gonic/gin"
 )
 
 func (s *Server) GetTransaction(c *gin.Context) {
-	header, err := s.config.Client.HeaderByNumber(context.Background(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	log.Printf("BlockNumber: %v\n", header.Number)
-	blockNumber := header.Number
+	req := c.MustGet("req").(dto.GetTransactionRequest)
+	blockNumber := req.BlockNumber
 
-	block, err := s.config.Client.BlockByNumber(context.Background(), blockNumber)
+	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(int64(blockNumber)))
 	if err != nil {
 		log.Fatal(err)
 	}
