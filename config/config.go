@@ -70,7 +70,3 @@ func Init() *Config {
 		Client: &client,
 	}
 }
-
-func SetGanacheAddresses() {
-	os.Getenv("GANACHE_ADDRESS0")
-}

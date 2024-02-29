@@ -15,8 +15,8 @@ func SetUp(s *Server) {
 	api.GET("/account/balance/pending", s.GetBalanceValid, s.GetPendingBalance)
 
 	// block
-	api.GET("/block/header", s.GetBlockHeaderByNumber)
-
+	api.GET("/block/header", s.GetBlockByNumberValid, s.GetBlockByNumber)
+	api.GET("/block/header/latest", s.GetLatestBlockNumber)
 	// transaction
 	api.GET("/transaction", s.GetTransaction)
 }
