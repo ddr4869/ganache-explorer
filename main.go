@@ -9,4 +9,5 @@ func main() {
 	cfg := config.Init()
 	router := internal.NewRestController(cfg)
 	router.Start()
+
 }

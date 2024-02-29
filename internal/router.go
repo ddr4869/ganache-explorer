@@ -22,6 +22,9 @@ func SetUp(s *Server) {
 	api.GET("/transactions", s.GetTransactionsValid, s.GetTransactions)
 	api.GET("/transactions/hashes", s.GetTransactionHashesValid, s.GetTransactionHashes)
 	api.GET("/transactions/receipt", s.GetTransactionReceiptValid, s.GetTransactionReceipt)
+
+	// transfer
+	api.POST("/transfer", s.TransferValid, s.Transfer)
 }
 
 func (s *Server) Start() error {

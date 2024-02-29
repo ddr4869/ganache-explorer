@@ -29,6 +29,7 @@ type Transaction struct {
 	Type      uint8       `json:"type"`
 	ChainId   string      `json:"chainId"`
 	Nonce     uint64      `json:"nonce"`
+	From      string      `json:"from"`
 	To        string      `json:"to"`
 	Gas       uint64      `json:"gas"`
 	GasPrice  string      `json:"gasPrice"`
