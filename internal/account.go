@@ -4,6 +4,7 @@ import (
 	"context"
 	"log"
 	"math/big"
+	"net/http"
 
 	"github.com/ddr4869/ether-go/internal/dto"
 	"github.com/ddr4869/ether-go/internal/utils"
@@ -26,9 +27,9 @@ func (s *Server) GetBalance(c *gin.Context) {
 
 	}
 	ether := utils.ConvertWeiToEther(*balance)
-	c.JSON(200, gin.H{
-		"wei": balance,
-		"eth": ether,
+	c.JSON(http.StatusOK, dto.GetBalanceResponse{
+		Wei:   balance,
+		Ether: ether,
 	})
 }
 
@@ -44,8 +45,8 @@ func (s *Server) GetPendingBalance(c *gin.Context) {
 
 	}
 	ether := utils.ConvertWeiToEther(*balance)
-	c.JSON(200, gin.H{
-		"wei": balance,
-		"eth": ether,
+	c.JSON(http.StatusOK, dto.GetBalanceResponse{
+		Wei:   balance,
+		Ether: ether,
 	})
 }

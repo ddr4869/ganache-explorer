@@ -7,8 +7,18 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) GetTransactionValid(c *gin.Context) {
+func (s *Server) GetTransactionsValid(c *gin.Context) {
 	var req dto.GetTransactionRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		log.Fatalf("Failed to bind request: %v", err)
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}
+
+func (s *Server) GetTransactionReceiptValid(c *gin.Context) {
+	var req dto.GetTransactionReceiptRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		log.Fatalf("Failed to bind request: %v", err)
 		return

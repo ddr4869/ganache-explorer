@@ -10,44 +10,26 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-func (s *Server) GetLatestBlockNumber(c *gin.Context) {
-	header, err := s.config.Client.HeaderByNumber(context.Background(), nil)
-	if err != nil {
-		log.Fatal(err)
-	}
-	blockNumber := header.Number
-	c.JSON(200, gin.H{
-		"block_number": blockNumber,
-	})
-}
-
+// block_number를 받지 않으면, 가장 최신 블록을 가져온다.
 func (s *Server) GetBlockByNumber(c *gin.Context) {
 	req := c.MustGet("req").(dto.GetBlockHeaderByNumberRequest)
-	blockNumber := req.BlockNumber
-	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(int64(blockNumber)))
-	if err != nil {
-		log.Fatal(err)
+	var blockNumber *big.Int
+	//var err error
+	if req.BlockNumber == 0 {
+		header, err := s.config.Client.HeaderByNumber(context.Background(), nil)
+		if err != nil {
+			log.Fatal(err)
+			return
+		}
+		blockNumber = header.Number
+	} else {
+		blockNumber = big.NewInt(int64(req.BlockNumber))
 	}
 
-	c.JSON(http.StatusOK, dto.GetBlockHeaderByNumberResponse{
-		BlockNumber: blockNumber,
-		Block: dto.Block{
-			Number:      block.Number().Uint64(),
-			GasLimit:    block.GasLimit(),
-			GasUsed:     block.GasUsed(),
-			Time:        block.Time(),
-			Difficulty:  block.Difficulty().Uint64(),
-			NumberU64:   block.NumberU64(),
-			MixDigest:   block.MixDigest().Hex(),
-			Nonce:       block.Nonce(),
-			Coinbase:    block.Coinbase().Hex(),
-			Root:        block.Root().Hex(),
-			ParentHash:  block.ParentHash().Hex(),
-			TxHash:      block.TxHash().Hex(),
-			ReceiptHash: block.ReceiptHash().Hex(),
-			UncleHash:   block.UncleHash().Hex(),
-
-			TransactionCount: len(block.Transactions()),
-		},
-	})
+	block, err := s.config.Client.BlockByNumber(context.Background(), blockNumber)
+	if err != nil {
+		log.Fatal(err)
+		return
+	}
+	c.JSON(http.StatusOK, dto.ConvertBlockToResponse(*block))
 }

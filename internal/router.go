@@ -15,10 +15,11 @@ func SetUp(s *Server) {
 	api.GET("/account/balance/pending", s.GetBalanceValid, s.GetPendingBalance)
 
 	// block
-	api.GET("/block/header", s.GetBlockByNumberValid, s.GetBlockByNumber)
-	api.GET("/block/header/latest", s.GetLatestBlockNumber)
+	api.GET("/block", s.GetBlockByNumberValid, s.GetBlockByNumber)
+
 	// transaction
-	api.GET("/transaction", s.GetTransactionValid, s.GetTransaction)
+	api.GET("/transaction", s.GetTransactionsValid, s.GetTransactions)
+	api.GET("/transaction/receipt", s.GetTransactionReceiptValid, s.GetTransactionReceipt)
 }
 
 func (s *Server) Start() error {
