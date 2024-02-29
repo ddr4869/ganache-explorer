@@ -18,8 +18,10 @@ func SetUp(s *Server) {
 	api.GET("/block", s.GetBlockByNumberValid, s.GetBlockByNumber)
 
 	// transaction
-	api.GET("/transaction", s.GetTransactionsValid, s.GetTransactions)
-	api.GET("/transaction/receipt", s.GetTransactionReceiptValid, s.GetTransactionReceipt)
+	api.GET("/transaction", s.GetTransactionByHashValid, s.GetTransactionByHash)
+	api.GET("/transactions", s.GetTransactionsValid, s.GetTransactions)
+	api.GET("/transactions/hashes", s.GetTransactionHashesValid, s.GetTransactionHashes)
+	api.GET("/transactions/receipt", s.GetTransactionReceiptValid, s.GetTransactionReceipt)
 }
 
 func (s *Server) Start() error {

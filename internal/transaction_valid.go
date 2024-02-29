@@ -7,8 +7,28 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
+func (s *Server) GetTransactionByHashValid(c *gin.Context) {
+	var req dto.GetTransactionByHashRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		log.Fatalf("Failed to bind request: %v", err)
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}
+
 func (s *Server) GetTransactionsValid(c *gin.Context) {
 	var req dto.GetTransactionRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		log.Fatalf("Failed to bind request: %v", err)
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}
+
+func (s *Server) GetTransactionHashesValid(c *gin.Context) {
+	var req dto.GetTransactionHashesRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
 		log.Fatalf("Failed to bind request: %v", err)
 		return
