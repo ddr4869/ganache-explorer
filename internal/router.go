@@ -16,6 +16,7 @@ func SetUp(s *Server) {
 
 	// block
 	api.GET("/block", s.GetBlockByNumberValid, s.GetBlockByNumber)
+	api.GET("/block/subscribe", s.SubscribeBlock)
 
 	// transaction
 	api.GET("/transaction", s.GetTransactionByHashValid, s.GetTransactionByHash)
@@ -25,6 +26,7 @@ func SetUp(s *Server) {
 
 	// transfer
 	api.POST("/transfer", s.TransferValid, s.Transfer)
+	api.POST("/transfer/token", s.TransferTokenValid, s.TransferToken)
 }
 
 func (s *Server) Start() error {

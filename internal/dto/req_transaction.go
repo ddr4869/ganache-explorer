@@ -14,6 +14,5 @@ type GetTransactionReceiptRequest struct {
 }
 
 type GetTransactionByHashRequest struct {
-	BlockNumber int    `form:"block_number" required:"true" binding:"required"`
-	Hash        string `form:"tx_hash"`
+	Hash string `form:"tx_hash"`
 }

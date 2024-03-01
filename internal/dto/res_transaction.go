@@ -58,6 +58,10 @@ type GetTransactionHashesResponse struct {
 	Tx_length int           `json:"tx_length"`
 }
 
+type TransactionHashResponse struct {
+	Hash common.Hash `json:"hash"`
+}
+
 func ConvertTransactions(tx types.Transactions) []*Transaction {
 	var transactions []*Transaction
 	for _, t := range tx {

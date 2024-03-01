@@ -2,6 +2,7 @@ package internal
 
 import (
 	"context"
+	"fmt"
 	"log"
 	"math/big"
 	"net/http"
@@ -17,9 +18,10 @@ func (s *Server) GetTransactionByHash(c *gin.Context) {
 	txHash := common.HexToHash(req.Hash)
 	tx, _, err := s.config.Client.TransactionByHash(context.Background(), txHash)
 	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Transaction not found: %v", txHash))
 		return
 	}
+	log.Print("test")
 	c.JSON(http.StatusOK, dto.GetTransactionByHashResponse{
 		Transaction: dto.ConvertTransaction(tx),
 	})
@@ -31,7 +33,7 @@ func (s *Server) GetTransactions(c *gin.Context) {
 
 	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(blockNumber))
 	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Block not found: %v", req.BlockNumber))
 	}
 	c.JSON(http.StatusOK, dto.GetTransactionResponse{
 		Transactions: dto.ConvertTransactions(block.Transactions()),
@@ -43,19 +45,19 @@ func (s *Server) GetTransactionReceipt(c *gin.Context) {
 	req := c.MustGet("req").(dto.GetTransactionReceiptRequest)
 	blockNumber, err := s.CheckBlockNumber(req.BlockNumber)
 	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "CheckBlockNumber error")
 		return
 	}
 	block, err := s.config.Client.BlockByNumber(context.Background(), blockNumber)
 	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Block not found: %v", req.BlockNumber))
 	}
 	result := make([]types.Receipt, 0)
 
 	if req.Hash != "" {
 		receipt, err := s.config.Client.TransactionReceipt(context.Background(), common.HexToHash(req.Hash))
 		if err != nil {
-			log.Fatal(err)
+			dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Receipt not found given hash: %v", req.Hash))
 		}
 		result = append(result, *receipt)
 		c.JSON(http.StatusOK, dto.GetTransactionReceiptResponse{
@@ -74,7 +76,7 @@ func (s *Server) GetTransactionReceipt(c *gin.Context) {
 		// }
 		receipt, err := s.config.Client.TransactionReceipt(context.Background(), tx.Hash())
 		if err != nil {
-			log.Fatal(err)
+			dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Receipt not found given hash: %v", req.Hash))
 		}
 		result = append(result, *receipt)
 	}
@@ -90,14 +92,12 @@ func (s *Server) GetTransactionHashes(c *gin.Context) {
 
 	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(blockNumber))
 	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Block not found: %v", req.BlockNumber))
 	}
-
 	hashes := make([]common.Hash, 0)
 	for _, v := range block.Transactions() {
 		hashes = append(hashes, v.Hash())
 	}
-
 	c.JSON(http.StatusOK, dto.GetTransactionHashesResponse{
 		Hashes:    hashes,
 		Tx_length: len(hashes),

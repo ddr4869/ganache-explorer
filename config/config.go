@@ -52,8 +52,10 @@ func Init() *Config {
 	}
 	client := ethclient.Client{}
 	if os.Getenv("TEST_NET") == "Sepolia" {
+		log.Print("Sepolia Chain is selected")
 		client = *sepolia_client
 	} else {
+		log.Print("Ganache Chain is selected")
 		client = *ganache_client
 	}
 	return &Config{

@@ -2,7 +2,6 @@ package internal
 
 import (
 	"context"
-	"log"
 	"math/big"
 	"net/http"
 
@@ -21,10 +20,8 @@ func (s *Server) GetBalance(c *gin.Context) {
 	}
 	balance, err := s.config.Client.BalanceAt(context.Background(), account, blockNumber)
 	if err != nil {
-		c.AbortWithStatusJSON(500, err)
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "failed to get balance")
 		return
-
 	}
 	ether := utils.ConvertWeiToEther(*balance)
 	c.JSON(http.StatusOK, dto.GetBalanceResponse{
@@ -39,8 +36,7 @@ func (s *Server) GetPendingBalance(c *gin.Context) {
 	account := common.HexToAddress(req.Address)
 	balance, err := s.config.Client.PendingBalanceAt(context.Background(), account)
 	if err != nil {
-		c.AbortWithStatusJSON(500, err)
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "failed to get balance")
 		return
 
 	}

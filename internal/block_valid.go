@@ -1,7 +1,7 @@
 package internal
 
 import (
-	"log"
+	"net/http"
 
 	"github.com/ddr4869/ether-go/internal/dto"
 	"github.com/gin-gonic/gin"
@@ -10,7 +10,7 @@ import (
 func (s *Server) GetBlockByNumberValid(c *gin.Context) {
 	var req dto.GetBlockHeaderByNumberRequest
 	if err := c.ShouldBindQuery(&req); err != nil {
-		log.Fatalf("Failed to bind request: %v", err)
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "failed to get block number")
 		return
 	}
 	c.Set("req", req)
