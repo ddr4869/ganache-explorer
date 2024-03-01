@@ -55,6 +55,7 @@ func (s *Server) SubscribeBlock(c *gin.Context) {
 			return
 		case header := <-headers:
 			log.Printf("block hash: %s", header.Hash().Hex())
+			log.Printf("block number: %s", header.Number.String())
 			block, err := s.config.Client.BlockByHash(context.Background(), header.Hash())
 			if err != nil {
 				dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to get block by hash")
