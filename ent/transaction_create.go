@@ -37,12 +37,6 @@ func (tc *TransactionCreate) SetNonce(i int) *TransactionCreate {
 	return tc
 }
 
-// SetFrom sets the "from" field.
-func (tc *TransactionCreate) SetFrom(s string) *TransactionCreate {
-	tc.mutation.SetFrom(s)
-	return tc
-}
-
 // SetTo sets the "to" field.
 func (tc *TransactionCreate) SetTo(s string) *TransactionCreate {
 	tc.mutation.SetTo(s)
@@ -85,6 +79,14 @@ func (tc *TransactionCreate) SetData(s string) *TransactionCreate {
 	return tc
 }
 
+// SetNillableData sets the "data" field if the given value is not nil.
+func (tc *TransactionCreate) SetNillableData(s *string) *TransactionCreate {
+	if s != nil {
+		tc.SetData(*s)
+	}
+	return tc
+}
+
 // SetHash sets the "hash" field.
 func (tc *TransactionCreate) SetHash(s string) *TransactionCreate {
 	tc.mutation.SetHash(s)
@@ -98,7 +100,7 @@ func (tc *TransactionCreate) Mutation() *TransactionMutation {
 
 // Save creates the Transaction in the database.
 func (tc *TransactionCreate) Save(ctx context.Context) (*Transaction, error) {
-	return withHooks[*Transaction, TransactionMutation](ctx, tc.sqlSave, tc.mutation, tc.hooks)
+	return withHooks(ctx, tc.sqlSave, tc.mutation, tc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -134,9 +136,6 @@ func (tc *TransactionCreate) check() error {
 	if _, ok := tc.mutation.Nonce(); !ok {
 		return &ValidationError{Name: "nonce", err: errors.New(`ent: missing required field "Transaction.nonce"`)}
 	}
-	if _, ok := tc.mutation.From(); !ok {
-		return &ValidationError{Name: "from", err: errors.New(`ent: missing required field "Transaction.from"`)}
-	}
 	if _, ok := tc.mutation.To(); !ok {
 		return &ValidationError{Name: "to", err: errors.New(`ent: missing required field "Transaction.to"`)}
 	}
@@ -154,9 +153,6 @@ func (tc *TransactionCreate) check() error {
 	}
 	if _, ok := tc.mutation.Value(); !ok {
 		return &ValidationError{Name: "value", err: errors.New(`ent: missing required field "Transaction.value"`)}
-	}
-	if _, ok := tc.mutation.Data(); !ok {
-		return &ValidationError{Name: "data", err: errors.New(`ent: missing required field "Transaction.data"`)}
 	}
 	if _, ok := tc.mutation.Hash(); !ok {
 		return &ValidationError{Name: "hash", err: errors.New(`ent: missing required field "Transaction.hash"`)}
@@ -199,10 +195,6 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 		_spec.SetField(transaction.FieldNonce, field.TypeInt, value)
 		_node.Nonce = value
 	}
-	if value, ok := tc.mutation.From(); ok {
-		_spec.SetField(transaction.FieldFrom, field.TypeString, value)
-		_node.From = value
-	}
 	if value, ok := tc.mutation.To(); ok {
 		_spec.SetField(transaction.FieldTo, field.TypeString, value)
 		_node.To = value
@@ -241,11 +233,15 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 // TransactionCreateBulk is the builder for creating many Transaction entities in bulk.
 type TransactionCreateBulk struct {
 	config
+	err      error
 	builders []*TransactionCreate
 }
 
 // Save creates the Transaction entities in the database.
 func (tcb *TransactionCreateBulk) Save(ctx context.Context) ([]*Transaction, error) {
+	if tcb.err != nil {
+		return nil, tcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(tcb.builders))
 	nodes := make([]*Transaction, len(tcb.builders))
 	mutators := make([]Mutator, len(tcb.builders))

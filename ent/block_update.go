@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
@@ -35,6 +34,14 @@ func (bu *BlockUpdate) SetNumber(i int) *BlockUpdate {
 	return bu
 }
 
+// SetNillableNumber sets the "number" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableNumber(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetNumber(*i)
+	}
+	return bu
+}
+
 // AddNumber adds i to the "number" field.
 func (bu *BlockUpdate) AddNumber(i int) *BlockUpdate {
 	bu.mutation.AddNumber(i)
@@ -45,6 +52,14 @@ func (bu *BlockUpdate) AddNumber(i int) *BlockUpdate {
 func (bu *BlockUpdate) SetGasLimit(i int) *BlockUpdate {
 	bu.mutation.ResetGasLimit()
 	bu.mutation.SetGasLimit(i)
+	return bu
+}
+
+// SetNillableGasLimit sets the "gas_limit" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableGasLimit(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetGasLimit(*i)
+	}
 	return bu
 }
 
@@ -61,6 +76,14 @@ func (bu *BlockUpdate) SetGasUsed(i int) *BlockUpdate {
 	return bu
 }
 
+// SetNillableGasUsed sets the "gas_used" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableGasUsed(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetGasUsed(*i)
+	}
+	return bu
+}
+
 // AddGasUsed adds i to the "gas_used" field.
 func (bu *BlockUpdate) AddGasUsed(i int) *BlockUpdate {
 	bu.mutation.AddGasUsed(i)
@@ -74,6 +97,14 @@ func (bu *BlockUpdate) SetDifficulty(i int) *BlockUpdate {
 	return bu
 }
 
+// SetNillableDifficulty sets the "difficulty" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableDifficulty(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetDifficulty(*i)
+	}
+	return bu
+}
+
 // AddDifficulty adds i to the "difficulty" field.
 func (bu *BlockUpdate) AddDifficulty(i int) *BlockUpdate {
 	bu.mutation.AddDifficulty(i)
@@ -81,8 +112,23 @@ func (bu *BlockUpdate) AddDifficulty(i int) *BlockUpdate {
 }
 
 // SetTime sets the "time" field.
-func (bu *BlockUpdate) SetTime(t time.Time) *BlockUpdate {
-	bu.mutation.SetTime(t)
+func (bu *BlockUpdate) SetTime(u uint64) *BlockUpdate {
+	bu.mutation.ResetTime()
+	bu.mutation.SetTime(u)
+	return bu
+}
+
+// SetNillableTime sets the "time" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableTime(u *uint64) *BlockUpdate {
+	if u != nil {
+		bu.SetTime(*u)
+	}
+	return bu
+}
+
+// AddTime adds u to the "time" field.
+func (bu *BlockUpdate) AddTime(u int64) *BlockUpdate {
+	bu.mutation.AddTime(u)
 	return bu
 }
 
@@ -90,6 +136,14 @@ func (bu *BlockUpdate) SetTime(t time.Time) *BlockUpdate {
 func (bu *BlockUpdate) SetNumberU64(u uint64) *BlockUpdate {
 	bu.mutation.ResetNumberU64()
 	bu.mutation.SetNumberU64(u)
+	return bu
+}
+
+// SetNillableNumberU64 sets the "number_u64" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableNumberU64(u *uint64) *BlockUpdate {
+	if u != nil {
+		bu.SetNumberU64(*u)
+	}
 	return bu
 }
 
@@ -105,10 +159,26 @@ func (bu *BlockUpdate) SetMixDigest(s string) *BlockUpdate {
 	return bu
 }
 
+// SetNillableMixDigest sets the "mix_digest" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableMixDigest(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetMixDigest(*s)
+	}
+	return bu
+}
+
 // SetNonce sets the "nonce" field.
 func (bu *BlockUpdate) SetNonce(i int) *BlockUpdate {
 	bu.mutation.ResetNonce()
 	bu.mutation.SetNonce(i)
+	return bu
+}
+
+// SetNillableNonce sets the "nonce" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableNonce(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetNonce(*i)
+	}
 	return bu
 }
 
@@ -124,9 +194,25 @@ func (bu *BlockUpdate) SetCoinbase(s string) *BlockUpdate {
 	return bu
 }
 
+// SetNillableCoinbase sets the "coinbase" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableCoinbase(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetCoinbase(*s)
+	}
+	return bu
+}
+
 // SetRoot sets the "root" field.
 func (bu *BlockUpdate) SetRoot(s string) *BlockUpdate {
 	bu.mutation.SetRoot(s)
+	return bu
+}
+
+// SetNillableRoot sets the "root" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableRoot(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetRoot(*s)
+	}
 	return bu
 }
 
@@ -136,9 +222,25 @@ func (bu *BlockUpdate) SetParentHash(s string) *BlockUpdate {
 	return bu
 }
 
+// SetNillableParentHash sets the "parent_hash" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableParentHash(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetParentHash(*s)
+	}
+	return bu
+}
+
 // SetTxHash sets the "tx_hash" field.
 func (bu *BlockUpdate) SetTxHash(s string) *BlockUpdate {
 	bu.mutation.SetTxHash(s)
+	return bu
+}
+
+// SetNillableTxHash sets the "tx_hash" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableTxHash(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetTxHash(*s)
+	}
 	return bu
 }
 
@@ -148,9 +250,25 @@ func (bu *BlockUpdate) SetReceiptHash(s string) *BlockUpdate {
 	return bu
 }
 
+// SetNillableReceiptHash sets the "receipt_hash" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableReceiptHash(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetReceiptHash(*s)
+	}
+	return bu
+}
+
 // SetUncleHash sets the "uncle_hash" field.
 func (bu *BlockUpdate) SetUncleHash(s string) *BlockUpdate {
 	bu.mutation.SetUncleHash(s)
+	return bu
+}
+
+// SetNillableUncleHash sets the "uncle_hash" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableUncleHash(s *string) *BlockUpdate {
+	if s != nil {
+		bu.SetUncleHash(*s)
+	}
 	return bu
 }
 
@@ -158,6 +276,14 @@ func (bu *BlockUpdate) SetUncleHash(s string) *BlockUpdate {
 func (bu *BlockUpdate) SetTxCount(i int) *BlockUpdate {
 	bu.mutation.ResetTxCount()
 	bu.mutation.SetTxCount(i)
+	return bu
+}
+
+// SetNillableTxCount sets the "tx_count" field if the given value is not nil.
+func (bu *BlockUpdate) SetNillableTxCount(i *int) *BlockUpdate {
+	if i != nil {
+		bu.SetTxCount(*i)
+	}
 	return bu
 }
 
@@ -174,7 +300,7 @@ func (bu *BlockUpdate) Mutation() *BlockMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (bu *BlockUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, BlockMutation](ctx, bu.sqlSave, bu.mutation, bu.hooks)
+	return withHooks(ctx, bu.sqlSave, bu.mutation, bu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -246,7 +372,10 @@ func (bu *BlockUpdate) sqlSave(ctx context.Context) (n int, err error) {
 		_spec.AddField(block.FieldDifficulty, field.TypeInt, value)
 	}
 	if value, ok := bu.mutation.Time(); ok {
-		_spec.SetField(block.FieldTime, field.TypeTime, value)
+		_spec.SetField(block.FieldTime, field.TypeUint64, value)
+	}
+	if value, ok := bu.mutation.AddedTime(); ok {
+		_spec.AddField(block.FieldTime, field.TypeUint64, value)
 	}
 	if value, ok := bu.mutation.NumberU64(); ok {
 		_spec.SetField(block.FieldNumberU64, field.TypeUint64, value)
@@ -314,6 +443,14 @@ func (buo *BlockUpdateOne) SetNumber(i int) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableNumber sets the "number" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableNumber(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetNumber(*i)
+	}
+	return buo
+}
+
 // AddNumber adds i to the "number" field.
 func (buo *BlockUpdateOne) AddNumber(i int) *BlockUpdateOne {
 	buo.mutation.AddNumber(i)
@@ -324,6 +461,14 @@ func (buo *BlockUpdateOne) AddNumber(i int) *BlockUpdateOne {
 func (buo *BlockUpdateOne) SetGasLimit(i int) *BlockUpdateOne {
 	buo.mutation.ResetGasLimit()
 	buo.mutation.SetGasLimit(i)
+	return buo
+}
+
+// SetNillableGasLimit sets the "gas_limit" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableGasLimit(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetGasLimit(*i)
+	}
 	return buo
 }
 
@@ -340,6 +485,14 @@ func (buo *BlockUpdateOne) SetGasUsed(i int) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableGasUsed sets the "gas_used" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableGasUsed(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetGasUsed(*i)
+	}
+	return buo
+}
+
 // AddGasUsed adds i to the "gas_used" field.
 func (buo *BlockUpdateOne) AddGasUsed(i int) *BlockUpdateOne {
 	buo.mutation.AddGasUsed(i)
@@ -353,6 +506,14 @@ func (buo *BlockUpdateOne) SetDifficulty(i int) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableDifficulty sets the "difficulty" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableDifficulty(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetDifficulty(*i)
+	}
+	return buo
+}
+
 // AddDifficulty adds i to the "difficulty" field.
 func (buo *BlockUpdateOne) AddDifficulty(i int) *BlockUpdateOne {
 	buo.mutation.AddDifficulty(i)
@@ -360,8 +521,23 @@ func (buo *BlockUpdateOne) AddDifficulty(i int) *BlockUpdateOne {
 }
 
 // SetTime sets the "time" field.
-func (buo *BlockUpdateOne) SetTime(t time.Time) *BlockUpdateOne {
-	buo.mutation.SetTime(t)
+func (buo *BlockUpdateOne) SetTime(u uint64) *BlockUpdateOne {
+	buo.mutation.ResetTime()
+	buo.mutation.SetTime(u)
+	return buo
+}
+
+// SetNillableTime sets the "time" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableTime(u *uint64) *BlockUpdateOne {
+	if u != nil {
+		buo.SetTime(*u)
+	}
+	return buo
+}
+
+// AddTime adds u to the "time" field.
+func (buo *BlockUpdateOne) AddTime(u int64) *BlockUpdateOne {
+	buo.mutation.AddTime(u)
 	return buo
 }
 
@@ -369,6 +545,14 @@ func (buo *BlockUpdateOne) SetTime(t time.Time) *BlockUpdateOne {
 func (buo *BlockUpdateOne) SetNumberU64(u uint64) *BlockUpdateOne {
 	buo.mutation.ResetNumberU64()
 	buo.mutation.SetNumberU64(u)
+	return buo
+}
+
+// SetNillableNumberU64 sets the "number_u64" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableNumberU64(u *uint64) *BlockUpdateOne {
+	if u != nil {
+		buo.SetNumberU64(*u)
+	}
 	return buo
 }
 
@@ -384,10 +568,26 @@ func (buo *BlockUpdateOne) SetMixDigest(s string) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableMixDigest sets the "mix_digest" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableMixDigest(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetMixDigest(*s)
+	}
+	return buo
+}
+
 // SetNonce sets the "nonce" field.
 func (buo *BlockUpdateOne) SetNonce(i int) *BlockUpdateOne {
 	buo.mutation.ResetNonce()
 	buo.mutation.SetNonce(i)
+	return buo
+}
+
+// SetNillableNonce sets the "nonce" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableNonce(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetNonce(*i)
+	}
 	return buo
 }
 
@@ -403,9 +603,25 @@ func (buo *BlockUpdateOne) SetCoinbase(s string) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableCoinbase sets the "coinbase" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableCoinbase(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetCoinbase(*s)
+	}
+	return buo
+}
+
 // SetRoot sets the "root" field.
 func (buo *BlockUpdateOne) SetRoot(s string) *BlockUpdateOne {
 	buo.mutation.SetRoot(s)
+	return buo
+}
+
+// SetNillableRoot sets the "root" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableRoot(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetRoot(*s)
+	}
 	return buo
 }
 
@@ -415,9 +631,25 @@ func (buo *BlockUpdateOne) SetParentHash(s string) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableParentHash sets the "parent_hash" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableParentHash(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetParentHash(*s)
+	}
+	return buo
+}
+
 // SetTxHash sets the "tx_hash" field.
 func (buo *BlockUpdateOne) SetTxHash(s string) *BlockUpdateOne {
 	buo.mutation.SetTxHash(s)
+	return buo
+}
+
+// SetNillableTxHash sets the "tx_hash" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableTxHash(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetTxHash(*s)
+	}
 	return buo
 }
 
@@ -427,9 +659,25 @@ func (buo *BlockUpdateOne) SetReceiptHash(s string) *BlockUpdateOne {
 	return buo
 }
 
+// SetNillableReceiptHash sets the "receipt_hash" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableReceiptHash(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetReceiptHash(*s)
+	}
+	return buo
+}
+
 // SetUncleHash sets the "uncle_hash" field.
 func (buo *BlockUpdateOne) SetUncleHash(s string) *BlockUpdateOne {
 	buo.mutation.SetUncleHash(s)
+	return buo
+}
+
+// SetNillableUncleHash sets the "uncle_hash" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableUncleHash(s *string) *BlockUpdateOne {
+	if s != nil {
+		buo.SetUncleHash(*s)
+	}
 	return buo
 }
 
@@ -437,6 +685,14 @@ func (buo *BlockUpdateOne) SetUncleHash(s string) *BlockUpdateOne {
 func (buo *BlockUpdateOne) SetTxCount(i int) *BlockUpdateOne {
 	buo.mutation.ResetTxCount()
 	buo.mutation.SetTxCount(i)
+	return buo
+}
+
+// SetNillableTxCount sets the "tx_count" field if the given value is not nil.
+func (buo *BlockUpdateOne) SetNillableTxCount(i *int) *BlockUpdateOne {
+	if i != nil {
+		buo.SetTxCount(*i)
+	}
 	return buo
 }
 
@@ -466,7 +722,7 @@ func (buo *BlockUpdateOne) Select(field string, fields ...string) *BlockUpdateOn
 
 // Save executes the query and returns the updated Block entity.
 func (buo *BlockUpdateOne) Save(ctx context.Context) (*Block, error) {
-	return withHooks[*Block, BlockMutation](ctx, buo.sqlSave, buo.mutation, buo.hooks)
+	return withHooks(ctx, buo.sqlSave, buo.mutation, buo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -555,7 +811,10 @@ func (buo *BlockUpdateOne) sqlSave(ctx context.Context) (_node *Block, err error
 		_spec.AddField(block.FieldDifficulty, field.TypeInt, value)
 	}
 	if value, ok := buo.mutation.Time(); ok {
-		_spec.SetField(block.FieldTime, field.TypeTime, value)
+		_spec.SetField(block.FieldTime, field.TypeUint64, value)
+	}
+	if value, ok := buo.mutation.AddedTime(); ok {
+		_spec.AddField(block.FieldTime, field.TypeUint64, value)
 	}
 	if value, ok := buo.mutation.NumberU64(); ok {
 		_spec.SetField(block.FieldNumberU64, field.TypeUint64, value)

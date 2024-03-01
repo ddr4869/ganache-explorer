@@ -22,8 +22,6 @@ type Transaction struct {
 	ChainID int `json:"chain_id,omitempty"`
 	// Nonce holds the value of the "nonce" field.
 	Nonce int `json:"nonce,omitempty"`
-	// From holds the value of the "from" field.
-	From string `json:"from,omitempty"`
 	// To holds the value of the "to" field.
 	To string `json:"to,omitempty"`
 	// Gas holds the value of the "gas" field.
@@ -50,7 +48,7 @@ func (*Transaction) scanValues(columns []string) ([]any, error) {
 		switch columns[i] {
 		case transaction.FieldID, transaction.FieldType, transaction.FieldChainID, transaction.FieldNonce, transaction.FieldGas:
 			values[i] = new(sql.NullInt64)
-		case transaction.FieldFrom, transaction.FieldTo, transaction.FieldGasPrice, transaction.FieldGasTipCap, transaction.FieldGasFeeCap, transaction.FieldValue, transaction.FieldData, transaction.FieldHash:
+		case transaction.FieldTo, transaction.FieldGasPrice, transaction.FieldGasTipCap, transaction.FieldGasFeeCap, transaction.FieldValue, transaction.FieldData, transaction.FieldHash:
 			values[i] = new(sql.NullString)
 		default:
 			values[i] = new(sql.UnknownType)
@@ -90,12 +88,6 @@ func (t *Transaction) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field nonce", values[i])
 			} else if value.Valid {
 				t.Nonce = int(value.Int64)
-			}
-		case transaction.FieldFrom:
-			if value, ok := values[i].(*sql.NullString); !ok {
-				return fmt.Errorf("unexpected type %T for field from", values[i])
-			} else if value.Valid {
-				t.From = value.String
 			}
 		case transaction.FieldTo:
 			if value, ok := values[i].(*sql.NullString); !ok {
@@ -189,9 +181,6 @@ func (t *Transaction) String() string {
 	builder.WriteString(", ")
 	builder.WriteString("nonce=")
 	builder.WriteString(fmt.Sprintf("%v", t.Nonce))
-	builder.WriteString(", ")
-	builder.WriteString("from=")
-	builder.WriteString(t.From)
 	builder.WriteString(", ")
 	builder.WriteString("to=")
 	builder.WriteString(t.To)

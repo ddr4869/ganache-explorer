@@ -1,6 +1,8 @@
 module github.com/ddr4869/ether-go
 
-go 1.20
+go 1.21
+
+toolchain go1.22.0
 
 require (
 	entgo.io/ent v0.13.1
@@ -8,6 +10,7 @@ require (
 	github.com/gin-contrib/cors v1.5.0
 	github.com/gin-gonic/gin v1.9.1
 	github.com/joho/godotenv v1.5.1
+	github.com/lib/pq v1.10.9
 )
 
 require (

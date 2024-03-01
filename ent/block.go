@@ -5,7 +5,6 @@ package ent
 import (
 	"fmt"
 	"strings"
-	"time"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
@@ -26,7 +25,7 @@ type Block struct {
 	// Difficulty holds the value of the "difficulty" field.
 	Difficulty int `json:"difficulty,omitempty"`
 	// Time holds the value of the "time" field.
-	Time time.Time `json:"time,omitempty"`
+	Time uint64 `json:"time,omitempty"`
 	// NumberU64 holds the value of the "number_u64" field.
 	NumberU64 uint64 `json:"number_u64,omitempty"`
 	// MixDigest holds the value of the "mix_digest" field.
@@ -55,12 +54,10 @@ func (*Block) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case block.FieldID, block.FieldNumber, block.FieldGasLimit, block.FieldGasUsed, block.FieldDifficulty, block.FieldNumberU64, block.FieldNonce, block.FieldTxCount:
+		case block.FieldID, block.FieldNumber, block.FieldGasLimit, block.FieldGasUsed, block.FieldDifficulty, block.FieldTime, block.FieldNumberU64, block.FieldNonce, block.FieldTxCount:
 			values[i] = new(sql.NullInt64)
 		case block.FieldMixDigest, block.FieldCoinbase, block.FieldRoot, block.FieldParentHash, block.FieldTxHash, block.FieldReceiptHash, block.FieldUncleHash:
 			values[i] = new(sql.NullString)
-		case block.FieldTime:
-			values[i] = new(sql.NullTime)
 		default:
 			values[i] = new(sql.UnknownType)
 		}
@@ -107,10 +104,10 @@ func (b *Block) assignValues(columns []string, values []any) error {
 				b.Difficulty = int(value.Int64)
 			}
 		case block.FieldTime:
-			if value, ok := values[i].(*sql.NullTime); !ok {
+			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field time", values[i])
 			} else if value.Valid {
-				b.Time = value.Time
+				b.Time = uint64(value.Int64)
 			}
 		case block.FieldNumberU64:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
@@ -221,7 +218,7 @@ func (b *Block) String() string {
 	builder.WriteString(fmt.Sprintf("%v", b.Difficulty))
 	builder.WriteString(", ")
 	builder.WriteString("time=")
-	builder.WriteString(b.Time.Format(time.ANSIC))
+	builder.WriteString(fmt.Sprintf("%v", b.Time))
 	builder.WriteString(", ")
 	builder.WriteString("number_u64=")
 	builder.WriteString(fmt.Sprintf("%v", b.NumberU64))

@@ -6,7 +6,6 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"time"
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
@@ -45,8 +44,8 @@ func (bc *BlockCreate) SetDifficulty(i int) *BlockCreate {
 }
 
 // SetTime sets the "time" field.
-func (bc *BlockCreate) SetTime(t time.Time) *BlockCreate {
-	bc.mutation.SetTime(t)
+func (bc *BlockCreate) SetTime(u uint64) *BlockCreate {
+	bc.mutation.SetTime(u)
 	return bc
 }
 
@@ -117,7 +116,7 @@ func (bc *BlockCreate) Mutation() *BlockMutation {
 
 // Save creates the Block in the database.
 func (bc *BlockCreate) Save(ctx context.Context) (*Block, error) {
-	return withHooks[*Block, BlockMutation](ctx, bc.sqlSave, bc.mutation, bc.hooks)
+	return withHooks(ctx, bc.sqlSave, bc.mutation, bc.hooks)
 }
 
 // SaveX calls Save and panics if Save returns an error.
@@ -237,7 +236,7 @@ func (bc *BlockCreate) createSpec() (*Block, *sqlgraph.CreateSpec) {
 		_node.Difficulty = value
 	}
 	if value, ok := bc.mutation.Time(); ok {
-		_spec.SetField(block.FieldTime, field.TypeTime, value)
+		_spec.SetField(block.FieldTime, field.TypeUint64, value)
 		_node.Time = value
 	}
 	if value, ok := bc.mutation.NumberU64(); ok {
@@ -286,11 +285,15 @@ func (bc *BlockCreate) createSpec() (*Block, *sqlgraph.CreateSpec) {
 // BlockCreateBulk is the builder for creating many Block entities in bulk.
 type BlockCreateBulk struct {
 	config
+	err      error
 	builders []*BlockCreate
 }
 
 // Save creates the Block entities in the database.
 func (bcb *BlockCreateBulk) Save(ctx context.Context) ([]*Block, error) {
+	if bcb.err != nil {
+		return nil, bcb.err
+	}
 	specs := make([]*sqlgraph.CreateSpec, len(bcb.builders))
 	nodes := make([]*Block, len(bcb.builders))
 	mutators := make([]Mutator, len(bcb.builders))

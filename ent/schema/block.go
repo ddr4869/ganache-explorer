@@ -18,7 +18,7 @@ func (Block) Fields() []ent.Field {
 		field.Int("gas_limit"),
 		field.Int("gas_used"),
 		field.Int("difficulty"),
-		field.Time("time"),
+		field.Uint64("time"),
 		field.Uint64("number_u64"),
 		field.String("mix_digest"),
 		field.Int("nonce"),

@@ -1,13 +1,31 @@
 package main
 
 import (
+	"context"
+	"log"
+
 	"github.com/ddr4869/ether-go/config"
+	"github.com/ddr4869/ether-go/ent"
 	"github.com/ddr4869/ether-go/internal"
 )
 
 func main() {
 	cfg := config.Init()
-	router := internal.NewRestController(cfg)
-	router.Start()
 
+	client, err := ent.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=postgres password=1821 sslmode=disable")
+	if err != nil {
+		log.Print("1")
+		log.Fatalf("failed opening connection to postgres: %v", err)
+	}
+	defer client.Close()
+	// Run the auto migration tool.
+	if err := client.Schema.Create(context.Background()); err != nil {
+		log.Fatalf("failed creating schema resources: %v", err)
+	}
+
+	router, err := internal.NewRestController(cfg)
+	if err != nil {
+		log.Fatalf("failed creating server: %v", err)
+	}
+	router.Start()
 }

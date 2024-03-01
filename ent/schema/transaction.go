@@ -16,14 +16,13 @@ func (Transaction) Fields() []ent.Field {
 		field.Int("type"),
 		field.Int("chain_id"),
 		field.Int("nonce"),
-		field.String("from"),
 		field.String("to"),
 		field.Int("gas"),
 		field.String("gasPrice"),
 		field.String("gasTipCap"),
 		field.String("gasFeeCap"),
 		field.String("value"),
-		field.Text("data"),
+		field.Text("data").Optional(),
 		field.String("hash"),
 	}
 }

@@ -3,8 +3,6 @@
 package block
 
 import (
-	"time"
-
 	"entgo.io/ent/dialect/sql"
 	"github.com/ddr4869/ether-go/ent/predicate"
 )
@@ -75,7 +73,7 @@ func Difficulty(v int) predicate.Block {
 }
 
 // Time applies equality check predicate on the "time" field. It's identical to TimeEQ.
-func Time(v time.Time) predicate.Block {
+func Time(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldEQ(FieldTime, v))
 }
 
@@ -290,42 +288,42 @@ func DifficultyLTE(v int) predicate.Block {
 }
 
 // TimeEQ applies the EQ predicate on the "time" field.
-func TimeEQ(v time.Time) predicate.Block {
+func TimeEQ(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldEQ(FieldTime, v))
 }
 
 // TimeNEQ applies the NEQ predicate on the "time" field.
-func TimeNEQ(v time.Time) predicate.Block {
+func TimeNEQ(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldNEQ(FieldTime, v))
 }
 
 // TimeIn applies the In predicate on the "time" field.
-func TimeIn(vs ...time.Time) predicate.Block {
+func TimeIn(vs ...uint64) predicate.Block {
 	return predicate.Block(sql.FieldIn(FieldTime, vs...))
 }
 
 // TimeNotIn applies the NotIn predicate on the "time" field.
-func TimeNotIn(vs ...time.Time) predicate.Block {
+func TimeNotIn(vs ...uint64) predicate.Block {
 	return predicate.Block(sql.FieldNotIn(FieldTime, vs...))
 }
 
 // TimeGT applies the GT predicate on the "time" field.
-func TimeGT(v time.Time) predicate.Block {
+func TimeGT(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldGT(FieldTime, v))
 }
 
 // TimeGTE applies the GTE predicate on the "time" field.
-func TimeGTE(v time.Time) predicate.Block {
+func TimeGTE(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldGTE(FieldTime, v))
 }
 
 // TimeLT applies the LT predicate on the "time" field.
-func TimeLT(v time.Time) predicate.Block {
+func TimeLT(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldLT(FieldTime, v))
 }
 
 // TimeLTE applies the LTE predicate on the "time" field.
-func TimeLTE(v time.Time) predicate.Block {
+func TimeLTE(v uint64) predicate.Block {
 	return predicate.Block(sql.FieldLTE(FieldTime, v))
 }
 
@@ -906,32 +904,15 @@ func TxCountLTE(v int) predicate.Block {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Block) predicate.Block {
-	return predicate.Block(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Block(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Block) predicate.Block {
-	return predicate.Block(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Block(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Block) predicate.Block {
-	return predicate.Block(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.Block(sql.NotPredicates(p))
 }

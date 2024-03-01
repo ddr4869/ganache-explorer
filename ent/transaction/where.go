@@ -67,11 +67,6 @@ func Nonce(v int) predicate.Transaction {
 	return predicate.Transaction(sql.FieldEQ(FieldNonce, v))
 }
 
-// From applies equality check predicate on the "from" field. It's identical to FromEQ.
-func From(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldEQ(FieldFrom, v))
-}
-
 // To applies equality check predicate on the "to" field. It's identical to ToEQ.
 func To(v string) predicate.Transaction {
 	return predicate.Transaction(sql.FieldEQ(FieldTo, v))
@@ -230,71 +225,6 @@ func NonceLT(v int) predicate.Transaction {
 // NonceLTE applies the LTE predicate on the "nonce" field.
 func NonceLTE(v int) predicate.Transaction {
 	return predicate.Transaction(sql.FieldLTE(FieldNonce, v))
-}
-
-// FromEQ applies the EQ predicate on the "from" field.
-func FromEQ(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldEQ(FieldFrom, v))
-}
-
-// FromNEQ applies the NEQ predicate on the "from" field.
-func FromNEQ(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldNEQ(FieldFrom, v))
-}
-
-// FromIn applies the In predicate on the "from" field.
-func FromIn(vs ...string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldIn(FieldFrom, vs...))
-}
-
-// FromNotIn applies the NotIn predicate on the "from" field.
-func FromNotIn(vs ...string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldNotIn(FieldFrom, vs...))
-}
-
-// FromGT applies the GT predicate on the "from" field.
-func FromGT(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldGT(FieldFrom, v))
-}
-
-// FromGTE applies the GTE predicate on the "from" field.
-func FromGTE(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldGTE(FieldFrom, v))
-}
-
-// FromLT applies the LT predicate on the "from" field.
-func FromLT(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldLT(FieldFrom, v))
-}
-
-// FromLTE applies the LTE predicate on the "from" field.
-func FromLTE(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldLTE(FieldFrom, v))
-}
-
-// FromContains applies the Contains predicate on the "from" field.
-func FromContains(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldContains(FieldFrom, v))
-}
-
-// FromHasPrefix applies the HasPrefix predicate on the "from" field.
-func FromHasPrefix(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldHasPrefix(FieldFrom, v))
-}
-
-// FromHasSuffix applies the HasSuffix predicate on the "from" field.
-func FromHasSuffix(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldHasSuffix(FieldFrom, v))
-}
-
-// FromEqualFold applies the EqualFold predicate on the "from" field.
-func FromEqualFold(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldEqualFold(FieldFrom, v))
-}
-
-// FromContainsFold applies the ContainsFold predicate on the "from" field.
-func FromContainsFold(v string) predicate.Transaction {
-	return predicate.Transaction(sql.FieldContainsFold(FieldFrom, v))
 }
 
 // ToEQ applies the EQ predicate on the "to" field.
@@ -717,6 +647,16 @@ func DataHasSuffix(v string) predicate.Transaction {
 	return predicate.Transaction(sql.FieldHasSuffix(FieldData, v))
 }
 
+// DataIsNil applies the IsNil predicate on the "data" field.
+func DataIsNil() predicate.Transaction {
+	return predicate.Transaction(sql.FieldIsNull(FieldData))
+}
+
+// DataNotNil applies the NotNil predicate on the "data" field.
+func DataNotNil() predicate.Transaction {
+	return predicate.Transaction(sql.FieldNotNull(FieldData))
+}
+
 // DataEqualFold applies the EqualFold predicate on the "data" field.
 func DataEqualFold(v string) predicate.Transaction {
 	return predicate.Transaction(sql.FieldEqualFold(FieldData, v))
@@ -794,32 +734,15 @@ func HashContainsFold(v string) predicate.Transaction {
 
 // And groups predicates with the AND operator between them.
 func And(predicates ...predicate.Transaction) predicate.Transaction {
-	return predicate.Transaction(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for _, p := range predicates {
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Transaction(sql.AndPredicates(predicates...))
 }
 
 // Or groups predicates with the OR operator between them.
 func Or(predicates ...predicate.Transaction) predicate.Transaction {
-	return predicate.Transaction(func(s *sql.Selector) {
-		s1 := s.Clone().SetP(nil)
-		for i, p := range predicates {
-			if i > 0 {
-				s1.Or()
-			}
-			p(s1)
-		}
-		s.Where(s1.P())
-	})
+	return predicate.Transaction(sql.OrPredicates(predicates...))
 }
 
 // Not applies the not operator on the given predicate.
 func Not(p predicate.Transaction) predicate.Transaction {
-	return predicate.Transaction(func(s *sql.Selector) {
-		p(s.Not())
-	})
+	return predicate.Transaction(sql.NotPredicates(p))
 }

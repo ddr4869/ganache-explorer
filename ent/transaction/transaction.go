@@ -17,8 +17,6 @@ const (
 	FieldChainID = "chain_id"
 	// FieldNonce holds the string denoting the nonce field in the database.
 	FieldNonce = "nonce"
-	// FieldFrom holds the string denoting the from field in the database.
-	FieldFrom = "from"
 	// FieldTo holds the string denoting the to field in the database.
 	FieldTo = "to"
 	// FieldGas holds the string denoting the gas field in the database.
@@ -45,7 +43,6 @@ var Columns = []string{
 	FieldType,
 	FieldChainID,
 	FieldNonce,
-	FieldFrom,
 	FieldTo,
 	FieldGas,
 	FieldGasPrice,
@@ -87,11 +84,6 @@ func ByChainID(opts ...sql.OrderTermOption) OrderOption {
 // ByNonce orders the results by the nonce field.
 func ByNonce(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldNonce, opts...).ToFunc()
-}
-
-// ByFrom orders the results by the from field.
-func ByFrom(opts ...sql.OrderTermOption) OrderOption {
-	return sql.OrderByField(FieldFrom, opts...).ToFunc()
 }
 
 // ByTo orders the results by the to field.

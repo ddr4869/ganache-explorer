@@ -34,6 +34,14 @@ func (tu *TransactionUpdate) SetType(i int) *TransactionUpdate {
 	return tu
 }
 
+// SetNillableType sets the "type" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableType(i *int) *TransactionUpdate {
+	if i != nil {
+		tu.SetType(*i)
+	}
+	return tu
+}
+
 // AddType adds i to the "type" field.
 func (tu *TransactionUpdate) AddType(i int) *TransactionUpdate {
 	tu.mutation.AddType(i)
@@ -44,6 +52,14 @@ func (tu *TransactionUpdate) AddType(i int) *TransactionUpdate {
 func (tu *TransactionUpdate) SetChainID(i int) *TransactionUpdate {
 	tu.mutation.ResetChainID()
 	tu.mutation.SetChainID(i)
+	return tu
+}
+
+// SetNillableChainID sets the "chain_id" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableChainID(i *int) *TransactionUpdate {
+	if i != nil {
+		tu.SetChainID(*i)
+	}
 	return tu
 }
 
@@ -60,15 +76,17 @@ func (tu *TransactionUpdate) SetNonce(i int) *TransactionUpdate {
 	return tu
 }
 
-// AddNonce adds i to the "nonce" field.
-func (tu *TransactionUpdate) AddNonce(i int) *TransactionUpdate {
-	tu.mutation.AddNonce(i)
+// SetNillableNonce sets the "nonce" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableNonce(i *int) *TransactionUpdate {
+	if i != nil {
+		tu.SetNonce(*i)
+	}
 	return tu
 }
 
-// SetFrom sets the "from" field.
-func (tu *TransactionUpdate) SetFrom(s string) *TransactionUpdate {
-	tu.mutation.SetFrom(s)
+// AddNonce adds i to the "nonce" field.
+func (tu *TransactionUpdate) AddNonce(i int) *TransactionUpdate {
+	tu.mutation.AddNonce(i)
 	return tu
 }
 
@@ -78,10 +96,26 @@ func (tu *TransactionUpdate) SetTo(s string) *TransactionUpdate {
 	return tu
 }
 
+// SetNillableTo sets the "to" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableTo(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetTo(*s)
+	}
+	return tu
+}
+
 // SetGas sets the "gas" field.
 func (tu *TransactionUpdate) SetGas(i int) *TransactionUpdate {
 	tu.mutation.ResetGas()
 	tu.mutation.SetGas(i)
+	return tu
+}
+
+// SetNillableGas sets the "gas" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableGas(i *int) *TransactionUpdate {
+	if i != nil {
+		tu.SetGas(*i)
+	}
 	return tu
 }
 
@@ -97,9 +131,25 @@ func (tu *TransactionUpdate) SetGasPrice(s string) *TransactionUpdate {
 	return tu
 }
 
+// SetNillableGasPrice sets the "gasPrice" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableGasPrice(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetGasPrice(*s)
+	}
+	return tu
+}
+
 // SetGasTipCap sets the "gasTipCap" field.
 func (tu *TransactionUpdate) SetGasTipCap(s string) *TransactionUpdate {
 	tu.mutation.SetGasTipCap(s)
+	return tu
+}
+
+// SetNillableGasTipCap sets the "gasTipCap" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableGasTipCap(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetGasTipCap(*s)
+	}
 	return tu
 }
 
@@ -109,9 +159,25 @@ func (tu *TransactionUpdate) SetGasFeeCap(s string) *TransactionUpdate {
 	return tu
 }
 
+// SetNillableGasFeeCap sets the "gasFeeCap" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableGasFeeCap(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetGasFeeCap(*s)
+	}
+	return tu
+}
+
 // SetValue sets the "value" field.
 func (tu *TransactionUpdate) SetValue(s string) *TransactionUpdate {
 	tu.mutation.SetValue(s)
+	return tu
+}
+
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableValue(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetValue(*s)
+	}
 	return tu
 }
 
@@ -121,9 +187,31 @@ func (tu *TransactionUpdate) SetData(s string) *TransactionUpdate {
 	return tu
 }
 
+// SetNillableData sets the "data" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableData(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetData(*s)
+	}
+	return tu
+}
+
+// ClearData clears the value of the "data" field.
+func (tu *TransactionUpdate) ClearData() *TransactionUpdate {
+	tu.mutation.ClearData()
+	return tu
+}
+
 // SetHash sets the "hash" field.
 func (tu *TransactionUpdate) SetHash(s string) *TransactionUpdate {
 	tu.mutation.SetHash(s)
+	return tu
+}
+
+// SetNillableHash sets the "hash" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableHash(s *string) *TransactionUpdate {
+	if s != nil {
+		tu.SetHash(*s)
+	}
 	return tu
 }
 
@@ -134,7 +222,7 @@ func (tu *TransactionUpdate) Mutation() *TransactionMutation {
 
 // Save executes the query and returns the number of nodes affected by the update operation.
 func (tu *TransactionUpdate) Save(ctx context.Context) (int, error) {
-	return withHooks[int, TransactionMutation](ctx, tu.sqlSave, tu.mutation, tu.hooks)
+	return withHooks(ctx, tu.sqlSave, tu.mutation, tu.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -186,9 +274,6 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	if value, ok := tu.mutation.AddedNonce(); ok {
 		_spec.AddField(transaction.FieldNonce, field.TypeInt, value)
 	}
-	if value, ok := tu.mutation.From(); ok {
-		_spec.SetField(transaction.FieldFrom, field.TypeString, value)
-	}
 	if value, ok := tu.mutation.To(); ok {
 		_spec.SetField(transaction.FieldTo, field.TypeString, value)
 	}
@@ -212,6 +297,9 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 	}
 	if value, ok := tu.mutation.Data(); ok {
 		_spec.SetField(transaction.FieldData, field.TypeString, value)
+	}
+	if tu.mutation.DataCleared() {
+		_spec.ClearField(transaction.FieldData, field.TypeString)
 	}
 	if value, ok := tu.mutation.Hash(); ok {
 		_spec.SetField(transaction.FieldHash, field.TypeString, value)
@@ -243,6 +331,14 @@ func (tuo *TransactionUpdateOne) SetType(i int) *TransactionUpdateOne {
 	return tuo
 }
 
+// SetNillableType sets the "type" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableType(i *int) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetType(*i)
+	}
+	return tuo
+}
+
 // AddType adds i to the "type" field.
 func (tuo *TransactionUpdateOne) AddType(i int) *TransactionUpdateOne {
 	tuo.mutation.AddType(i)
@@ -253,6 +349,14 @@ func (tuo *TransactionUpdateOne) AddType(i int) *TransactionUpdateOne {
 func (tuo *TransactionUpdateOne) SetChainID(i int) *TransactionUpdateOne {
 	tuo.mutation.ResetChainID()
 	tuo.mutation.SetChainID(i)
+	return tuo
+}
+
+// SetNillableChainID sets the "chain_id" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableChainID(i *int) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetChainID(*i)
+	}
 	return tuo
 }
 
@@ -269,15 +373,17 @@ func (tuo *TransactionUpdateOne) SetNonce(i int) *TransactionUpdateOne {
 	return tuo
 }
 
-// AddNonce adds i to the "nonce" field.
-func (tuo *TransactionUpdateOne) AddNonce(i int) *TransactionUpdateOne {
-	tuo.mutation.AddNonce(i)
+// SetNillableNonce sets the "nonce" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableNonce(i *int) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetNonce(*i)
+	}
 	return tuo
 }
 
-// SetFrom sets the "from" field.
-func (tuo *TransactionUpdateOne) SetFrom(s string) *TransactionUpdateOne {
-	tuo.mutation.SetFrom(s)
+// AddNonce adds i to the "nonce" field.
+func (tuo *TransactionUpdateOne) AddNonce(i int) *TransactionUpdateOne {
+	tuo.mutation.AddNonce(i)
 	return tuo
 }
 
@@ -287,10 +393,26 @@ func (tuo *TransactionUpdateOne) SetTo(s string) *TransactionUpdateOne {
 	return tuo
 }
 
+// SetNillableTo sets the "to" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableTo(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetTo(*s)
+	}
+	return tuo
+}
+
 // SetGas sets the "gas" field.
 func (tuo *TransactionUpdateOne) SetGas(i int) *TransactionUpdateOne {
 	tuo.mutation.ResetGas()
 	tuo.mutation.SetGas(i)
+	return tuo
+}
+
+// SetNillableGas sets the "gas" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableGas(i *int) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetGas(*i)
+	}
 	return tuo
 }
 
@@ -306,9 +428,25 @@ func (tuo *TransactionUpdateOne) SetGasPrice(s string) *TransactionUpdateOne {
 	return tuo
 }
 
+// SetNillableGasPrice sets the "gasPrice" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableGasPrice(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetGasPrice(*s)
+	}
+	return tuo
+}
+
 // SetGasTipCap sets the "gasTipCap" field.
 func (tuo *TransactionUpdateOne) SetGasTipCap(s string) *TransactionUpdateOne {
 	tuo.mutation.SetGasTipCap(s)
+	return tuo
+}
+
+// SetNillableGasTipCap sets the "gasTipCap" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableGasTipCap(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetGasTipCap(*s)
+	}
 	return tuo
 }
 
@@ -318,9 +456,25 @@ func (tuo *TransactionUpdateOne) SetGasFeeCap(s string) *TransactionUpdateOne {
 	return tuo
 }
 
+// SetNillableGasFeeCap sets the "gasFeeCap" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableGasFeeCap(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetGasFeeCap(*s)
+	}
+	return tuo
+}
+
 // SetValue sets the "value" field.
 func (tuo *TransactionUpdateOne) SetValue(s string) *TransactionUpdateOne {
 	tuo.mutation.SetValue(s)
+	return tuo
+}
+
+// SetNillableValue sets the "value" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableValue(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetValue(*s)
+	}
 	return tuo
 }
 
@@ -330,9 +484,31 @@ func (tuo *TransactionUpdateOne) SetData(s string) *TransactionUpdateOne {
 	return tuo
 }
 
+// SetNillableData sets the "data" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableData(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetData(*s)
+	}
+	return tuo
+}
+
+// ClearData clears the value of the "data" field.
+func (tuo *TransactionUpdateOne) ClearData() *TransactionUpdateOne {
+	tuo.mutation.ClearData()
+	return tuo
+}
+
 // SetHash sets the "hash" field.
 func (tuo *TransactionUpdateOne) SetHash(s string) *TransactionUpdateOne {
 	tuo.mutation.SetHash(s)
+	return tuo
+}
+
+// SetNillableHash sets the "hash" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableHash(s *string) *TransactionUpdateOne {
+	if s != nil {
+		tuo.SetHash(*s)
+	}
 	return tuo
 }
 
@@ -356,7 +532,7 @@ func (tuo *TransactionUpdateOne) Select(field string, fields ...string) *Transac
 
 // Save executes the query and returns the updated Transaction entity.
 func (tuo *TransactionUpdateOne) Save(ctx context.Context) (*Transaction, error) {
-	return withHooks[*Transaction, TransactionMutation](ctx, tuo.sqlSave, tuo.mutation, tuo.hooks)
+	return withHooks(ctx, tuo.sqlSave, tuo.mutation, tuo.hooks)
 }
 
 // SaveX is like Save, but panics if an error occurs.
@@ -425,9 +601,6 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 	if value, ok := tuo.mutation.AddedNonce(); ok {
 		_spec.AddField(transaction.FieldNonce, field.TypeInt, value)
 	}
-	if value, ok := tuo.mutation.From(); ok {
-		_spec.SetField(transaction.FieldFrom, field.TypeString, value)
-	}
 	if value, ok := tuo.mutation.To(); ok {
 		_spec.SetField(transaction.FieldTo, field.TypeString, value)
 	}
@@ -451,6 +624,9 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 	}
 	if value, ok := tuo.mutation.Data(); ok {
 		_spec.SetField(transaction.FieldData, field.TypeString, value)
+	}
+	if tuo.mutation.DataCleared() {
+		_spec.ClearField(transaction.FieldData, field.TypeString)
 	}
 	if value, ok := tuo.mutation.Hash(); ok {
 		_spec.SetField(transaction.FieldHash, field.TypeString, value)
