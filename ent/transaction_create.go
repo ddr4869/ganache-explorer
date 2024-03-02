@@ -19,6 +19,12 @@ type TransactionCreate struct {
 	hooks    []Hook
 }
 
+// SetBlockNumber sets the "block_number" field.
+func (tc *TransactionCreate) SetBlockNumber(i int) *TransactionCreate {
+	tc.mutation.SetBlockNumber(i)
+	return tc
+}
+
 // SetType sets the "type" field.
 func (tc *TransactionCreate) SetType(i int) *TransactionCreate {
 	tc.mutation.SetType(i)
@@ -127,6 +133,14 @@ func (tc *TransactionCreate) ExecX(ctx context.Context) {
 
 // check runs all checks and user-defined validators on the builder.
 func (tc *TransactionCreate) check() error {
+	if _, ok := tc.mutation.BlockNumber(); !ok {
+		return &ValidationError{Name: "block_number", err: errors.New(`ent: missing required field "Transaction.block_number"`)}
+	}
+	if v, ok := tc.mutation.BlockNumber(); ok {
+		if err := transaction.BlockNumberValidator(v); err != nil {
+			return &ValidationError{Name: "block_number", err: fmt.Errorf(`ent: validator failed for field "Transaction.block_number": %w`, err)}
+		}
+	}
 	if _, ok := tc.mutation.GetType(); !ok {
 		return &ValidationError{Name: "type", err: errors.New(`ent: missing required field "Transaction.type"`)}
 	}
@@ -183,6 +197,10 @@ func (tc *TransactionCreate) createSpec() (*Transaction, *sqlgraph.CreateSpec) {
 		_node = &Transaction{config: tc.config}
 		_spec = sqlgraph.NewCreateSpec(transaction.Table, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeInt))
 	)
+	if value, ok := tc.mutation.BlockNumber(); ok {
+		_spec.SetField(transaction.FieldBlockNumber, field.TypeInt, value)
+		_node.BlockNumber = value
+	}
 	if value, ok := tc.mutation.GetType(); ok {
 		_spec.SetField(transaction.FieldType, field.TypeInt, value)
 		_node.Type = value

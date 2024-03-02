@@ -26,18 +26,18 @@ import (
 //		"hash": "0x35b32a3ff7470ed49db25b192608858677ff2a98fe31231a85664ecac98ae288"
 //	},
 type Transaction struct {
-	Type      uint8       `json:"type"`
-	ChainId   string      `json:"chainId"`
-	Nonce     uint64      `json:"nonce"`
-	From      string      `json:"from"`
-	To        string      `json:"to"`
-	Gas       uint64      `json:"gas"`
-	GasPrice  string      `json:"gasPrice"`
-	GasTipCap string      `json:"gasTipCap"`
-	GasFeeCap string      `json:"gasFeeCap"`
-	Value     string      `json:"value"`
-	Data      []byte      `json:"data"`
-	Hash      common.Hash `json:"hash"`
+	Type      uint8  `json:"type"`
+	ChainId   string `json:"chainId"`
+	Nonce     uint64 `json:"nonce"`
+	From      string `json:"from"`
+	To        string `json:"to"`
+	Gas       uint64 `json:"gas"`
+	GasPrice  string `json:"gasPrice"`
+	GasTipCap string `json:"gasTipCap"`
+	GasFeeCap string `json:"gasFeeCap"`
+	Value     string `json:"value"`
+	//Data      []byte      `json:"data"`
+	Hash common.Hash `json:"hash"`
 }
 
 type GetTransactionByHashResponse struct {
@@ -71,17 +71,23 @@ func ConvertTransactions(tx types.Transactions) []*Transaction {
 }
 
 func ConvertTransaction(tx *types.Transaction) *Transaction {
+	var receiver string
+	if tx.To() != nil {
+		receiver = tx.To().String()
+	} else {
+		receiver = ""
+	}
 	return &Transaction{
-		Type:      tx.Type(),
-		ChainId:   tx.ChainId().String(),
-		Data:      tx.Data(),
+		Type:    tx.Type(),
+		ChainId: tx.ChainId().String(),
+		//Data:      tx.Data(),
 		Gas:       tx.Gas(),
 		GasPrice:  tx.GasPrice().String(),
 		GasTipCap: tx.GasTipCap().String(),
 		GasFeeCap: tx.GasFeeCap().String(),
 		Value:     tx.Value().String(),
 		Nonce:     tx.Nonce(),
-		To:        tx.To().String(),
+		To:        receiver,
 		Hash:      tx.Hash(),
 	}
 }

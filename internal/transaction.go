@@ -34,6 +34,7 @@ func (s *Server) GetTransactions(c *gin.Context) {
 	block, err := s.config.Client.BlockByNumber(context.Background(), big.NewInt(blockNumber))
 	if err != nil {
 		dto.NewErrorResponse(c, http.StatusNotFound, err, fmt.Sprintf("Block not found: %v", req.BlockNumber))
+		return
 	}
 	c.JSON(http.StatusOK, dto.GetTransactionResponse{
 		Transactions: dto.ConvertTransactions(block.Transactions()),

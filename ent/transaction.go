@@ -16,6 +16,8 @@ type Transaction struct {
 	config `json:"-"`
 	// ID of the ent.
 	ID int `json:"id,omitempty"`
+	// BlockNumber holds the value of the "block_number" field.
+	BlockNumber int `json:"block_number,omitempty"`
 	// Type holds the value of the "type" field.
 	Type int `json:"type,omitempty"`
 	// ChainID holds the value of the "chain_id" field.
@@ -46,7 +48,7 @@ func (*Transaction) scanValues(columns []string) ([]any, error) {
 	values := make([]any, len(columns))
 	for i := range columns {
 		switch columns[i] {
-		case transaction.FieldID, transaction.FieldType, transaction.FieldChainID, transaction.FieldNonce, transaction.FieldGas:
+		case transaction.FieldID, transaction.FieldBlockNumber, transaction.FieldType, transaction.FieldChainID, transaction.FieldNonce, transaction.FieldGas:
 			values[i] = new(sql.NullInt64)
 		case transaction.FieldTo, transaction.FieldGasPrice, transaction.FieldGasTipCap, transaction.FieldGasFeeCap, transaction.FieldValue, transaction.FieldData, transaction.FieldHash:
 			values[i] = new(sql.NullString)
@@ -71,6 +73,12 @@ func (t *Transaction) assignValues(columns []string, values []any) error {
 				return fmt.Errorf("unexpected type %T for field id", value)
 			}
 			t.ID = int(value.Int64)
+		case transaction.FieldBlockNumber:
+			if value, ok := values[i].(*sql.NullInt64); !ok {
+				return fmt.Errorf("unexpected type %T for field block_number", values[i])
+			} else if value.Valid {
+				t.BlockNumber = int(value.Int64)
+			}
 		case transaction.FieldType:
 			if value, ok := values[i].(*sql.NullInt64); !ok {
 				return fmt.Errorf("unexpected type %T for field type", values[i])
@@ -173,6 +181,9 @@ func (t *Transaction) String() string {
 	var builder strings.Builder
 	builder.WriteString("Transaction(")
 	builder.WriteString(fmt.Sprintf("id=%v, ", t.ID))
+	builder.WriteString("block_number=")
+	builder.WriteString(fmt.Sprintf("%v", t.BlockNumber))
+	builder.WriteString(", ")
 	builder.WriteString("type=")
 	builder.WriteString(fmt.Sprintf("%v", t.Type))
 	builder.WriteString(", ")

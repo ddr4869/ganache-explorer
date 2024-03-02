@@ -36,6 +36,7 @@ var (
 	// TransactionsColumns holds the columns for the "transactions" table.
 	TransactionsColumns = []*schema.Column{
 		{Name: "id", Type: field.TypeInt, Increment: true},
+		{Name: "block_number", Type: field.TypeInt},
 		{Name: "type", Type: field.TypeInt},
 		{Name: "chain_id", Type: field.TypeInt},
 		{Name: "nonce", Type: field.TypeInt},

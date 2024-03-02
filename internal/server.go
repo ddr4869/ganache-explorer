@@ -1,22 +1,21 @@
 package internal
 
 import (
-	"context"
 	"fmt"
 	"strconv"
 	"time"
 
 	"github.com/ddr4869/ether-go/config"
-	"github.com/ddr4869/ether-go/ent"
+	"github.com/ddr4869/ether-go/internal/repository"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"
 )
 
 type Server struct {
-	router    *gin.Engine
-	config    *config.Config
-	entClient *ent.Client
+	router     *gin.Engine
+	config     *config.Config
+	repository repository.Repository
 }
 
 func NewRestController(cfg *config.Config) (*Server, error) {
@@ -24,16 +23,12 @@ func NewRestController(cfg *config.Config) (*Server, error) {
 	router := gin.New()
 	router.Use(gin.LoggerWithFormatter(GetGinLogFomatter()))
 	router.Use(corsMiddleware())
-	entClient, err := ent.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=postgres password=1821 sslmode=disable")
+	repo := repository.Repository{}
+	err := repo.NewEntClient()
 	if err != nil {
 		return nil, err
 	}
-	// defer entClient.Close()
-	// Run the auto migration tool.
-	if err := entClient.Schema.Create(context.Background()); err != nil {
-		return nil, err
-	}
-	server := &Server{router, cfg, entClient}
+	server := &Server{router, cfg, repo}
 	SetUp(server)
 	return server, nil
 }

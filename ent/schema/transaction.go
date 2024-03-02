@@ -13,6 +13,8 @@ type Transaction struct {
 // Fields of the Transaction.
 func (Transaction) Fields() []ent.Field {
 	return []ent.Field{
+		field.Int("block_number").
+			Positive(),
 		field.Int("type"),
 		field.Int("chain_id"),
 		field.Int("nonce"),

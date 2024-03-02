@@ -1380,28 +1380,30 @@ func (m *BlockMutation) ResetEdge(name string) error {
 // TransactionMutation represents an operation that mutates the Transaction nodes in the graph.
 type TransactionMutation struct {
 	config
-	op            Op
-	typ           string
-	id            *int
-	_type         *int
-	add_type      *int
-	chain_id      *int
-	addchain_id   *int
-	nonce         *int
-	addnonce      *int
-	to            *string
-	gas           *int
-	addgas        *int
-	gasPrice      *string
-	gasTipCap     *string
-	gasFeeCap     *string
-	value         *string
-	data          *string
-	hash          *string
-	clearedFields map[string]struct{}
-	done          bool
-	oldValue      func(context.Context) (*Transaction, error)
-	predicates    []predicate.Transaction
+	op              Op
+	typ             string
+	id              *int
+	block_number    *int
+	addblock_number *int
+	_type           *int
+	add_type        *int
+	chain_id        *int
+	addchain_id     *int
+	nonce           *int
+	addnonce        *int
+	to              *string
+	gas             *int
+	addgas          *int
+	gasPrice        *string
+	gasTipCap       *string
+	gasFeeCap       *string
+	value           *string
+	data            *string
+	hash            *string
+	clearedFields   map[string]struct{}
+	done            bool
+	oldValue        func(context.Context) (*Transaction, error)
+	predicates      []predicate.Transaction
 }
 
 var _ ent.Mutation = (*TransactionMutation)(nil)
@@ -1500,6 +1502,62 @@ func (m *TransactionMutation) IDs(ctx context.Context) ([]int, error) {
 	default:
 		return nil, fmt.Errorf("IDs is not allowed on %s operations", m.op)
 	}
+}
+
+// SetBlockNumber sets the "block_number" field.
+func (m *TransactionMutation) SetBlockNumber(i int) {
+	m.block_number = &i
+	m.addblock_number = nil
+}
+
+// BlockNumber returns the value of the "block_number" field in the mutation.
+func (m *TransactionMutation) BlockNumber() (r int, exists bool) {
+	v := m.block_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// OldBlockNumber returns the old "block_number" field's value of the Transaction entity.
+// If the Transaction object wasn't provided to the builder, the object is fetched from the database.
+// An error is returned if the mutation operation is not UpdateOne, or the database query fails.
+func (m *TransactionMutation) OldBlockNumber(ctx context.Context) (v int, err error) {
+	if !m.op.Is(OpUpdateOne) {
+		return v, errors.New("OldBlockNumber is only allowed on UpdateOne operations")
+	}
+	if m.id == nil || m.oldValue == nil {
+		return v, errors.New("OldBlockNumber requires an ID field in the mutation")
+	}
+	oldValue, err := m.oldValue(ctx)
+	if err != nil {
+		return v, fmt.Errorf("querying old value for OldBlockNumber: %w", err)
+	}
+	return oldValue.BlockNumber, nil
+}
+
+// AddBlockNumber adds i to the "block_number" field.
+func (m *TransactionMutation) AddBlockNumber(i int) {
+	if m.addblock_number != nil {
+		*m.addblock_number += i
+	} else {
+		m.addblock_number = &i
+	}
+}
+
+// AddedBlockNumber returns the value that was added to the "block_number" field in this mutation.
+func (m *TransactionMutation) AddedBlockNumber() (r int, exists bool) {
+	v := m.addblock_number
+	if v == nil {
+		return
+	}
+	return *v, true
+}
+
+// ResetBlockNumber resets all changes to the "block_number" field.
+func (m *TransactionMutation) ResetBlockNumber() {
+	m.block_number = nil
+	m.addblock_number = nil
 }
 
 // SetType sets the "type" field.
@@ -2025,7 +2083,10 @@ func (m *TransactionMutation) Type() string {
 // order to get all numeric fields that were incremented/decremented, call
 // AddedFields().
 func (m *TransactionMutation) Fields() []string {
-	fields := make([]string, 0, 11)
+	fields := make([]string, 0, 12)
+	if m.block_number != nil {
+		fields = append(fields, transaction.FieldBlockNumber)
+	}
 	if m._type != nil {
 		fields = append(fields, transaction.FieldType)
 	}
@@ -2067,6 +2128,8 @@ func (m *TransactionMutation) Fields() []string {
 // schema.
 func (m *TransactionMutation) Field(name string) (ent.Value, bool) {
 	switch name {
+	case transaction.FieldBlockNumber:
+		return m.BlockNumber()
 	case transaction.FieldType:
 		return m.GetType()
 	case transaction.FieldChainID:
@@ -2098,6 +2161,8 @@ func (m *TransactionMutation) Field(name string) (ent.Value, bool) {
 // database failed.
 func (m *TransactionMutation) OldField(ctx context.Context, name string) (ent.Value, error) {
 	switch name {
+	case transaction.FieldBlockNumber:
+		return m.OldBlockNumber(ctx)
 	case transaction.FieldType:
 		return m.OldType(ctx)
 	case transaction.FieldChainID:
@@ -2129,6 +2194,13 @@ func (m *TransactionMutation) OldField(ctx context.Context, name string) (ent.Va
 // type.
 func (m *TransactionMutation) SetField(name string, value ent.Value) error {
 	switch name {
+	case transaction.FieldBlockNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.SetBlockNumber(v)
+		return nil
 	case transaction.FieldType:
 		v, ok := value.(int)
 		if !ok {
@@ -2214,6 +2286,9 @@ func (m *TransactionMutation) SetField(name string, value ent.Value) error {
 // this mutation.
 func (m *TransactionMutation) AddedFields() []string {
 	var fields []string
+	if m.addblock_number != nil {
+		fields = append(fields, transaction.FieldBlockNumber)
+	}
 	if m.add_type != nil {
 		fields = append(fields, transaction.FieldType)
 	}
@@ -2234,6 +2309,8 @@ func (m *TransactionMutation) AddedFields() []string {
 // was not set, or was not defined in the schema.
 func (m *TransactionMutation) AddedField(name string) (ent.Value, bool) {
 	switch name {
+	case transaction.FieldBlockNumber:
+		return m.AddedBlockNumber()
 	case transaction.FieldType:
 		return m.AddedType()
 	case transaction.FieldChainID:
@@ -2251,6 +2328,13 @@ func (m *TransactionMutation) AddedField(name string) (ent.Value, bool) {
 // type.
 func (m *TransactionMutation) AddField(name string, value ent.Value) error {
 	switch name {
+	case transaction.FieldBlockNumber:
+		v, ok := value.(int)
+		if !ok {
+			return fmt.Errorf("unexpected type %T for field %s", value, name)
+		}
+		m.AddBlockNumber(v)
+		return nil
 	case transaction.FieldType:
 		v, ok := value.(int)
 		if !ok {
@@ -2315,6 +2399,9 @@ func (m *TransactionMutation) ClearField(name string) error {
 // It returns an error if the field is not defined in the schema.
 func (m *TransactionMutation) ResetField(name string) error {
 	switch name {
+	case transaction.FieldBlockNumber:
+		m.ResetBlockNumber()
+		return nil
 	case transaction.FieldType:
 		m.ResetType()
 		return nil

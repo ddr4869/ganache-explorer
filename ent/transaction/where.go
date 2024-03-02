@@ -52,6 +52,11 @@ func IDLTE(id int) predicate.Transaction {
 	return predicate.Transaction(sql.FieldLTE(FieldID, id))
 }
 
+// BlockNumber applies equality check predicate on the "block_number" field. It's identical to BlockNumberEQ.
+func BlockNumber(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldEQ(FieldBlockNumber, v))
+}
+
 // Type applies equality check predicate on the "type" field. It's identical to TypeEQ.
 func Type(v int) predicate.Transaction {
 	return predicate.Transaction(sql.FieldEQ(FieldType, v))
@@ -105,6 +110,46 @@ func Data(v string) predicate.Transaction {
 // Hash applies equality check predicate on the "hash" field. It's identical to HashEQ.
 func Hash(v string) predicate.Transaction {
 	return predicate.Transaction(sql.FieldEQ(FieldHash, v))
+}
+
+// BlockNumberEQ applies the EQ predicate on the "block_number" field.
+func BlockNumberEQ(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldEQ(FieldBlockNumber, v))
+}
+
+// BlockNumberNEQ applies the NEQ predicate on the "block_number" field.
+func BlockNumberNEQ(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldNEQ(FieldBlockNumber, v))
+}
+
+// BlockNumberIn applies the In predicate on the "block_number" field.
+func BlockNumberIn(vs ...int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldIn(FieldBlockNumber, vs...))
+}
+
+// BlockNumberNotIn applies the NotIn predicate on the "block_number" field.
+func BlockNumberNotIn(vs ...int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldNotIn(FieldBlockNumber, vs...))
+}
+
+// BlockNumberGT applies the GT predicate on the "block_number" field.
+func BlockNumberGT(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldGT(FieldBlockNumber, v))
+}
+
+// BlockNumberGTE applies the GTE predicate on the "block_number" field.
+func BlockNumberGTE(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldGTE(FieldBlockNumber, v))
+}
+
+// BlockNumberLT applies the LT predicate on the "block_number" field.
+func BlockNumberLT(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldLT(FieldBlockNumber, v))
+}
+
+// BlockNumberLTE applies the LTE predicate on the "block_number" field.
+func BlockNumberLTE(v int) predicate.Transaction {
+	return predicate.Transaction(sql.FieldLTE(FieldBlockNumber, v))
 }
 
 // TypeEQ applies the EQ predicate on the "type" field.

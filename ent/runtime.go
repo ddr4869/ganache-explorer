@@ -5,6 +5,7 @@ package ent
 import (
 	"github.com/ddr4869/ether-go/ent/block"
 	"github.com/ddr4869/ether-go/ent/schema"
+	"github.com/ddr4869/ether-go/ent/transaction"
 )
 
 // The init function reads all schema descriptors with runtime code
@@ -17,4 +18,10 @@ func init() {
 	blockDescNumber := blockFields[0].Descriptor()
 	// block.NumberValidator is a validator for the "number" field. It is called by the builders before save.
 	block.NumberValidator = blockDescNumber.Validators[0].(func(int) error)
+	transactionFields := schema.Transaction{}.Fields()
+	_ = transactionFields
+	// transactionDescBlockNumber is the schema descriptor for block_number field.
+	transactionDescBlockNumber := transactionFields[0].Descriptor()
+	// transaction.BlockNumberValidator is a validator for the "block_number" field. It is called by the builders before save.
+	transaction.BlockNumberValidator = transactionDescBlockNumber.Validators[0].(func(int) error)
 }

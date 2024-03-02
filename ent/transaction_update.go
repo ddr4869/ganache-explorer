@@ -27,6 +27,27 @@ func (tu *TransactionUpdate) Where(ps ...predicate.Transaction) *TransactionUpda
 	return tu
 }
 
+// SetBlockNumber sets the "block_number" field.
+func (tu *TransactionUpdate) SetBlockNumber(i int) *TransactionUpdate {
+	tu.mutation.ResetBlockNumber()
+	tu.mutation.SetBlockNumber(i)
+	return tu
+}
+
+// SetNillableBlockNumber sets the "block_number" field if the given value is not nil.
+func (tu *TransactionUpdate) SetNillableBlockNumber(i *int) *TransactionUpdate {
+	if i != nil {
+		tu.SetBlockNumber(*i)
+	}
+	return tu
+}
+
+// AddBlockNumber adds i to the "block_number" field.
+func (tu *TransactionUpdate) AddBlockNumber(i int) *TransactionUpdate {
+	tu.mutation.AddBlockNumber(i)
+	return tu
+}
+
 // SetType sets the "type" field.
 func (tu *TransactionUpdate) SetType(i int) *TransactionUpdate {
 	tu.mutation.ResetType()
@@ -247,7 +268,20 @@ func (tu *TransactionUpdate) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (tu *TransactionUpdate) check() error {
+	if v, ok := tu.mutation.BlockNumber(); ok {
+		if err := transaction.BlockNumberValidator(v); err != nil {
+			return &ValidationError{Name: "block_number", err: fmt.Errorf(`ent: validator failed for field "Transaction.block_number": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
+	if err := tu.check(); err != nil {
+		return n, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeInt))
 	if ps := tu.mutation.predicates; len(ps) > 0 {
 		_spec.Predicate = func(selector *sql.Selector) {
@@ -255,6 +289,12 @@ func (tu *TransactionUpdate) sqlSave(ctx context.Context) (n int, err error) {
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := tu.mutation.BlockNumber(); ok {
+		_spec.SetField(transaction.FieldBlockNumber, field.TypeInt, value)
+	}
+	if value, ok := tu.mutation.AddedBlockNumber(); ok {
+		_spec.AddField(transaction.FieldBlockNumber, field.TypeInt, value)
 	}
 	if value, ok := tu.mutation.GetType(); ok {
 		_spec.SetField(transaction.FieldType, field.TypeInt, value)
@@ -322,6 +362,27 @@ type TransactionUpdateOne struct {
 	fields   []string
 	hooks    []Hook
 	mutation *TransactionMutation
+}
+
+// SetBlockNumber sets the "block_number" field.
+func (tuo *TransactionUpdateOne) SetBlockNumber(i int) *TransactionUpdateOne {
+	tuo.mutation.ResetBlockNumber()
+	tuo.mutation.SetBlockNumber(i)
+	return tuo
+}
+
+// SetNillableBlockNumber sets the "block_number" field if the given value is not nil.
+func (tuo *TransactionUpdateOne) SetNillableBlockNumber(i *int) *TransactionUpdateOne {
+	if i != nil {
+		tuo.SetBlockNumber(*i)
+	}
+	return tuo
+}
+
+// AddBlockNumber adds i to the "block_number" field.
+func (tuo *TransactionUpdateOne) AddBlockNumber(i int) *TransactionUpdateOne {
+	tuo.mutation.AddBlockNumber(i)
+	return tuo
 }
 
 // SetType sets the "type" field.
@@ -557,7 +618,20 @@ func (tuo *TransactionUpdateOne) ExecX(ctx context.Context) {
 	}
 }
 
+// check runs all checks and user-defined validators on the builder.
+func (tuo *TransactionUpdateOne) check() error {
+	if v, ok := tuo.mutation.BlockNumber(); ok {
+		if err := transaction.BlockNumberValidator(v); err != nil {
+			return &ValidationError{Name: "block_number", err: fmt.Errorf(`ent: validator failed for field "Transaction.block_number": %w`, err)}
+		}
+	}
+	return nil
+}
+
 func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transaction, err error) {
+	if err := tuo.check(); err != nil {
+		return _node, err
+	}
 	_spec := sqlgraph.NewUpdateSpec(transaction.Table, transaction.Columns, sqlgraph.NewFieldSpec(transaction.FieldID, field.TypeInt))
 	id, ok := tuo.mutation.ID()
 	if !ok {
@@ -582,6 +656,12 @@ func (tuo *TransactionUpdateOne) sqlSave(ctx context.Context) (_node *Transactio
 				ps[i](selector)
 			}
 		}
+	}
+	if value, ok := tuo.mutation.BlockNumber(); ok {
+		_spec.SetField(transaction.FieldBlockNumber, field.TypeInt, value)
+	}
+	if value, ok := tuo.mutation.AddedBlockNumber(); ok {
+		_spec.AddField(transaction.FieldBlockNumber, field.TypeInt, value)
 	}
 	if value, ok := tuo.mutation.GetType(); ok {
 		_spec.SetField(transaction.FieldType, field.TypeInt, value)

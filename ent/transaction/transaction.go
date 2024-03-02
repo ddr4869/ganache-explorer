@@ -11,6 +11,8 @@ const (
 	Label = "transaction"
 	// FieldID holds the string denoting the id field in the database.
 	FieldID = "id"
+	// FieldBlockNumber holds the string denoting the block_number field in the database.
+	FieldBlockNumber = "block_number"
 	// FieldType holds the string denoting the type field in the database.
 	FieldType = "type"
 	// FieldChainID holds the string denoting the chain_id field in the database.
@@ -40,6 +42,7 @@ const (
 // Columns holds all SQL columns for transaction fields.
 var Columns = []string{
 	FieldID,
+	FieldBlockNumber,
 	FieldType,
 	FieldChainID,
 	FieldNonce,
@@ -63,12 +66,22 @@ func ValidColumn(column string) bool {
 	return false
 }
 
+var (
+	// BlockNumberValidator is a validator for the "block_number" field. It is called by the builders before save.
+	BlockNumberValidator func(int) error
+)
+
 // OrderOption defines the ordering options for the Transaction queries.
 type OrderOption func(*sql.Selector)
 
 // ByID orders the results by the id field.
 func ByID(opts ...sql.OrderTermOption) OrderOption {
 	return sql.OrderByField(FieldID, opts...).ToFunc()
+}
+
+// ByBlockNumber orders the results by the block_number field.
+func ByBlockNumber(opts ...sql.OrderTermOption) OrderOption {
+	return sql.OrderByField(FieldBlockNumber, opts...).ToFunc()
 }
 
 // ByType orders the results by the type field.

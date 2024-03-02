@@ -261,12 +261,12 @@ func (tq *TransactionQuery) Clone() *TransactionQuery {
 // Example:
 //
 //	var v []struct {
-//		Type int `json:"type,omitempty"`
+//		BlockNumber int `json:"block_number,omitempty"`
 //		Count int `json:"count,omitempty"`
 //	}
 //
 //	client.Transaction.Query().
-//		GroupBy(transaction.FieldType).
+//		GroupBy(transaction.FieldBlockNumber).
 //		Aggregate(ent.Count()).
 //		Scan(ctx, &v)
 func (tq *TransactionQuery) GroupBy(field string, fields ...string) *TransactionGroupBy {
@@ -284,11 +284,11 @@ func (tq *TransactionQuery) GroupBy(field string, fields ...string) *Transaction
 // Example:
 //
 //	var v []struct {
-//		Type int `json:"type,omitempty"`
+//		BlockNumber int `json:"block_number,omitempty"`
 //	}
 //
 //	client.Transaction.Query().
-//		Select(transaction.FieldType).
+//		Select(transaction.FieldBlockNumber).
 //		Scan(ctx, &v)
 func (tq *TransactionQuery) Select(fields ...string) *TransactionSelect {
 	tq.ctx.Fields = append(tq.ctx.Fields, fields...)
