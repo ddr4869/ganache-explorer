@@ -46,3 +46,13 @@ func (s *Server) LoadStoreContractValid(c *gin.Context) {
 	c.Set("req", req)
 	c.Next()
 }
+
+func (s *Server) LoadErc20ContractValid(c *gin.Context) {
+	var req dto.LoadStoreContractRequest
+	if err := c.ShouldBindQuery(&req); err != nil {
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "failed to get block number")
+		return
+	}
+	c.Set("req", req)
+	c.Next()
+}

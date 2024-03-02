@@ -21,3 +21,8 @@ type LoadStoreContractRequest struct {
 	Contract_address string `json:"contract_address"`
 	Key              string `json:"key"`
 }
+
+type LoadErc20ContractRequest struct {
+	Contract_address string `json:"contract_address"`
+	Key              string `json:"key"`
+}

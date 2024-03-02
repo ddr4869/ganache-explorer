@@ -20,33 +20,7 @@ import (
 
 func (s *Server) DeployStoreContract(c *gin.Context) {
 	req := c.MustGet("req").(dto.DeployContractRequest)
-	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(req.From_private)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get nonce")
-		return
-	}
-
-	gasPrice, err := s.config.Client.SuggestGasPrice(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Gas suggestion failed")
-		return
-	}
-
-	chainID, err := s.config.Client.NetworkID(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get chainID")
-		return
-	}
-
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to bind auth")
-		return
-	}
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = uint64(3000000) // in units -> 0.003 ether
-	auth.GasPrice = gasPrice
+	auth, err := s.SetupKeyTransaction(req.From_private, 0)
 
 	version := "1.0"
 	address, tx, instance, err := store.DeployStore(auth, s.config.Client, version)
@@ -83,33 +57,7 @@ func (s *Server) LoadStoreContract(c *gin.Context) {
 // write contract
 func (s *Server) WriteStoreContract(c *gin.Context) {
 	req := c.MustGet("req").(dto.WriteContractRequest)
-	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(req.From_private)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get nonce")
-		return
-	}
-
-	gasPrice, err := s.config.Client.SuggestGasPrice(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Gas suggestion failed")
-		return
-	}
-	chainID, err := s.config.Client.NetworkID(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get chainID")
-		return
-	}
-
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to bind auth")
-		return
-	}
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = uint64(3000000) // in units
-	auth.GasPrice = gasPrice
-
+	auth, err := s.SetupKeyTransaction(req.From_private, 0)
 	address := common.HexToAddress(req.Contract_address)
 	instance, err := store.NewStore(address, s.config.Client)
 	if err != nil {
@@ -141,72 +89,35 @@ func (s *Server) WriteStoreContract(c *gin.Context) {
 	})
 }
 
-func (s *Server) ReadByteContract(c *gin.Context) {
-	req := c.MustGet("req").(dto.ReadByteContractRequest)
-	addresses := common.HexToAddress(req.Contract_address)
-	bytecode, err := s.config.Client.CodeAt(context.Background(), addresses, nil) // nil is latest block
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get bytecode")
-		return
-	}
-	c.JSON(http.StatusOK, dto.ReadByteContractResponse{
-		Bytecode: hex.EncodeToString(bytecode),
-	})
-}
+// erc20
 
 func (s *Server) DeployErc20Contract(c *gin.Context) {
 	req := c.MustGet("req").(dto.DeployContractRequest)
-	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(req.From_private)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get nonce")
-		return
-	}
+	auth, err := s.SetupKeyTransaction(req.From_private, 0)
 
-	gasPrice, err := s.config.Client.SuggestGasPrice(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Gas suggestion failed")
-		return
-	}
-
-	chainID, err := s.config.Client.NetworkID(context.Background())
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get chainID")
-		return
-	}
-
-	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to bind auth")
-		return
-	}
-	auth.Nonce = big.NewInt(int64(nonce))
-	auth.Value = big.NewInt(0)      // in wei
-	auth.GasLimit = uint64(3000000) // in units -> 0.003 ether
-	auth.GasPrice = gasPrice
-
-	version := "1.0"
-	address, tx, instance, err := store.DeployStore(auth, s.config.Client, version)
+	token, tx, instance, err := token.DeployToken(auth, s.config.Client)
 	if err != nil {
 		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to deploy contract")
 		return
 	}
 	_ = instance
 	c.JSON(http.StatusOK, dto.DeployContractResponse{
-		Address: address.Hex(),
+		Address: token.Hex(),
 		Hash:    tx.Hash(),
 	})
 }
 
-func (s *Server) ReadErc20Contract(c *gin.Context) {
+func (s *Server) LoadErc20Contract(c *gin.Context) {
 	// Golem (GNT) Address
-	tokenAddress := common.HexToAddress("0xa74476443119A942dE498590Fe1f2454d7D4aC0d")
+	req := c.MustGet("req").(dto.LoadStoreContractRequest)
+
+	tokenAddress := common.HexToAddress(req.Contract_address)
 	instance, err := token.NewToken(tokenAddress, s.config.Client)
 	if err != nil {
 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 1")
 		return
 	}
-
-	address := common.HexToAddress("0x29fF15c2bF1a5Ac3F528A0E0920c9886b41E7245")
+	address := common.HexToAddress("0xa74476443119A942dE498590Fe1f2454d7D4aC0d")
 	bal, err := instance.BalanceOf(&bind.CallOpts{}, address)
 	if err != nil {
 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 2")
@@ -231,6 +142,13 @@ func (s *Server) ReadErc20Contract(c *gin.Context) {
 		return
 	}
 
+	total, err := instance.TotalSupply(&bind.CallOpts{})
+	if err != nil {
+		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 5")
+		return
+	}
+	log.Printf("total supply : %v", total)
+
 	fmt.Printf("name: %s\n", name)         // "name: Golem Network"
 	fmt.Printf("symbol: %s\n", symbol)     // "symbol: GNT"
 	fmt.Printf("decimals: %v\n", decimals) // "decimals: 18"
@@ -242,4 +160,53 @@ func (s *Server) ReadErc20Contract(c *gin.Context) {
 	value := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
 
 	fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
+}
+
+// deploy contract
+func (s *Server) SetupKeyTransaction(private_key string, gas_limit int) (*bind.TransactOpts, error) {
+	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(private_key)
+	if err != nil {
+		log.Printf("Failed to get nonce")
+		return nil, err
+	}
+
+	gasPrice, err := s.config.Client.SuggestGasPrice(context.Background())
+	if err != nil {
+		log.Printf("Gas suggestion failed")
+		return nil, err
+	}
+
+	chainID, err := s.config.Client.NetworkID(context.Background())
+	if err != nil {
+		log.Printf("Failed to get chainID")
+		return nil, err
+	}
+
+	auth, err := bind.NewKeyedTransactorWithChainID(privateKey, chainID)
+	if err != nil {
+		log.Printf("Failed to bind auth")
+		return nil, err
+	}
+	auth.Nonce = big.NewInt(int64(nonce))
+	auth.Value = big.NewInt(0) // in wei
+	if gas_limit != 0 {
+		auth.GasLimit = uint64(gas_limit) // in units
+	} else {
+		auth.GasLimit = uint64(3000000) // in units -> 0.003 ether
+	}
+	auth.GasPrice = gasPrice
+	return auth, nil
+}
+
+func (s *Server) ReadByteContract(c *gin.Context) {
+	req := c.MustGet("req").(dto.ReadByteContractRequest)
+	addresses := common.HexToAddress(req.Contract_address)
+	bytecode, err := s.config.Client.CodeAt(context.Background(), addresses, nil) // nil is latest block
+	if err != nil {
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get bytecode")
+		return
+	}
+	c.JSON(http.StatusOK, dto.ReadByteContractResponse{
+		Bytecode: hex.EncodeToString(bytecode),
+	})
 }

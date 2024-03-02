@@ -29,11 +29,12 @@ func SetUp(s *Server) {
 	api.POST("/transfer/token", s.TransferTokenValid, s.TransferToken)
 
 	// contract
-	api.POST("/contract/deploy", s.DeployContractValid, s.DeployStoreContract)
-	api.GET("/contract/load", s.LoadStoreContractValid, s.LoadStoreContract)
+	api.POST("/contract/store/deploy", s.DeployContractValid, s.DeployStoreContract)
+	api.GET("/contract/store/load", s.LoadStoreContractValid, s.LoadStoreContract)
 	api.POST("/contract/write", s.WriteContractValid, s.WriteStoreContract)
 	api.GET("/contract/read", s.ReadByteContractValid, s.ReadByteContract)
-	api.GET("/contract/read/erc20", s.ReadErc20Contract)
+	api.POST("/contract/erc20/deploy", s.DeployContractValid, s.DeployErc20Contract)
+	api.GET("/contract/erc20/load", s.LoadErc20ContractValid, s.LoadErc20Contract)
 }
 
 func (s *Server) Start() error {
