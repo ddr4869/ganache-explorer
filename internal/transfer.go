@@ -22,24 +22,9 @@ import (
 
 func (s *Server) Transfer(c *gin.Context) {
 	req := c.MustGet("req").(dto.TransferRequest)
-	privateKey, err := crypto.HexToECDSA(utils.Remove0xPrefix(req.From_private))
+	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(req.From_private)
 	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to bind private key")
-		return
-	}
-
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Cannot cast public key to ECDSA")
-		return
-	}
-
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := s.config.Client.PendingNonceAt(context.Background(), fromAddress)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to get nonce")
-		return
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get nonce")
 	}
 
 	value := big.NewInt(req.Value)    // in wei (1 eth)
@@ -67,21 +52,9 @@ func (s *Server) Transfer(c *gin.Context) {
 
 func (s *Server) TransferToken(c *gin.Context) {
 	req := c.MustGet("req").(dto.TransferTokenRequest)
-	privateKey, err := crypto.HexToECDSA(utils.Remove0xPrefix(req.From_private))
+	nonce, privateKey, err := s.GetNonceAndPKfromKeyString(req.From_private)
 	if err != nil {
-		log.Fatal(err)
-	}
-
-	publicKey := privateKey.Public()
-	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
-	if !ok {
-		log.Fatal("error casting public key to ECDSA")
-	}
-
-	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
-	nonce, err := s.config.Client.PendingNonceAt(context.Background(), fromAddress)
-	if err != nil {
-		log.Fatal(err)
+		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to get nonce")
 	}
 
 	value := big.NewInt(0)
@@ -164,4 +137,22 @@ func (s *Server) SignRawTransaction(tx *types.Transaction, privateKey *ecdsa.Pri
 	}
 	rawTxHex := hex.EncodeToString(rawTxBytes)
 	return rawTxHex, err
+}
+
+func (s *Server) GetNonceAndPKfromKeyString(key string) (uint64, *ecdsa.PrivateKey, error) {
+	privateKey, err := crypto.HexToECDSA(utils.Remove0xPrefix(key))
+	if err != nil {
+		return 0, nil, err
+	}
+	publicKey := privateKey.Public()
+	publicKeyECDSA, ok := publicKey.(*ecdsa.PublicKey)
+	if !ok {
+		return 0, nil, err
+	}
+	fromAddress := crypto.PubkeyToAddress(*publicKeyECDSA)
+	nonce, err := s.config.Client.PendingNonceAt(context.Background(), fromAddress)
+	if err != nil {
+		return 0, nil, err
+	}
+	return nonce, privateKey, nil
 }

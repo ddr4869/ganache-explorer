@@ -27,6 +27,13 @@ func SetUp(s *Server) {
 	// transfer
 	api.POST("/transfer", s.TransferValid, s.Transfer)
 	api.POST("/transfer/token", s.TransferTokenValid, s.TransferToken)
+
+	// contract
+	api.POST("/contract/deploy", s.DeployContractValid, s.DeployStoreContract)
+	api.GET("/contract/load", s.LoadStoreContractValid, s.LoadStoreContract)
+	api.POST("/contract/write", s.WriteContractValid, s.WriteStoreContract)
+	api.GET("/contract/read", s.ReadByteContractValid, s.ReadByteContract)
+	api.GET("/contract/read/erc20", s.ReadErc20Contract)
 }
 
 func (s *Server) Start() error {
