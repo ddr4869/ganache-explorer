@@ -9,8 +9,8 @@ import (
 	"math/big"
 	"net/http"
 
-	"github.com/ddr4869/ether-go/internal/dto"
-	"github.com/ddr4869/ether-go/internal/utils"
+	"github.com/ddr4869/ganache-explorer/internal/dto"
+	"github.com/ddr4869/ganache-explorer/internal/utils"
 	"github.com/ethereum/go-ethereum"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/ethereum/go-ethereum/core/types"

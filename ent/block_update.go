@@ -10,8 +10,8 @@ import (
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ddr4869/ether-go/ent/block"
-	"github.com/ddr4869/ether-go/ent/predicate"
+	"github.com/ddr4869/ganache-explorer/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/predicate"
 )
 
 // BlockUpdate is the builder for updating Block entities.

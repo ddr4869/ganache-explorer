@@ -4,9 +4,9 @@ import (
 	"context"
 	"log"
 
-	"github.com/ddr4869/ether-go/config"
-	"github.com/ddr4869/ether-go/ent"
-	"github.com/ddr4869/ether-go/internal"
+	"github.com/ddr4869/ganache-explorer/config"
+	"github.com/ddr4869/ganache-explorer/ent"
+	"github.com/ddr4869/ganache-explorer/internal"
 )
 
 func main() {
@@ -14,7 +14,6 @@ func main() {
 
 	client, err := ent.Open("postgres", "host=127.0.0.1 port=5432 user=postgres dbname=postgres password=1821 sslmode=disable")
 	if err != nil {
-		log.Print("1")
 		log.Fatalf("failed opening connection to postgres: %v", err)
 	}
 	defer client.Close()

@@ -5,7 +5,7 @@ import (
 
 	"log"
 
-	"github.com/ddr4869/ether-go/ent"
+	"github.com/ddr4869/ganache-explorer/ent"
 	"github.com/ethereum/go-ethereum/core/types"
 )
 

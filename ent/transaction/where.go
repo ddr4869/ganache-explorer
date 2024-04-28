@@ -4,7 +4,7 @@ package transaction
 
 import (
 	"entgo.io/ent/dialect/sql"
-	"github.com/ddr4869/ether-go/ent/predicate"
+	"github.com/ddr4869/ganache-explorer/ent/predicate"
 )
 
 // ID filters vertices based on their ID field.

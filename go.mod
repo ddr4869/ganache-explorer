@@ -1,4 +1,4 @@
-module github.com/ddr4869/ether-go
+module github.com/ddr4869/ganache-explorer
 
 go 1.21
 

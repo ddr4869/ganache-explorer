@@ -3,7 +3,7 @@ package internal
 import (
 	"net/http"
 
-	"github.com/ddr4869/ether-go/internal/dto"
+	"github.com/ddr4869/ganache-explorer/internal/dto"
 	"github.com/gin-gonic/gin"
 )
 

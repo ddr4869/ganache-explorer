@@ -6,7 +6,7 @@ import (
 	"context"
 	"fmt"
 
-	"github.com/ddr4869/ether-go/ent"
+	"github.com/ddr4869/ganache-explorer/ent"
 )
 
 // The BlockFunc type is an adapter to allow the use of ordinary

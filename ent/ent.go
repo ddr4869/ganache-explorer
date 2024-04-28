@@ -12,8 +12,8 @@ import (
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
 	"entgo.io/ent/dialect/sql/sqlgraph"
-	"github.com/ddr4869/ether-go/ent/block"
-	"github.com/ddr4869/ether-go/ent/transaction"
+	"github.com/ddr4869/ganache-explorer/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/transaction"
 )
 
 // ent aliases to avoid import conflicts in user's code.

@@ -5,8 +5,8 @@ import (
 	"math/big"
 	"net/http"
 
-	"github.com/ddr4869/ether-go/internal/dto"
-	"github.com/ddr4869/ether-go/internal/utils"
+	"github.com/ddr4869/ganache-explorer/internal/dto"
+	"github.com/ddr4869/ganache-explorer/internal/utils"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
 )
@@ -30,7 +30,6 @@ func (s *Server) GetBalance(c *gin.Context) {
 	})
 }
 
-// 트랜잭션을 제출하거나 확인을 기다리는 등의 보류 중인 계정 잔액을 조회합니다.
 func (s *Server) GetPendingBalance(c *gin.Context) {
 	req := c.MustGet("req").(dto.GetBalanceRequest)
 	account := common.HexToAddress(req.Address)

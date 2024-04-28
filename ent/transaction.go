@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/ddr4869/ether-go/ent/transaction"
+	"github.com/ddr4869/ganache-explorer/ent/transaction"
 )
 
 // Transaction is the model entity for the Transaction schema.

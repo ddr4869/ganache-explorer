@@ -5,8 +5,8 @@ import (
 	"strconv"
 	"time"
 
-	"github.com/ddr4869/ether-go/config"
-	"github.com/ddr4869/ether-go/internal/repository"
+	"github.com/ddr4869/ganache-explorer/config"
+	"github.com/ddr4869/ganache-explorer/internal/repository"
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	_ "github.com/lib/pq"

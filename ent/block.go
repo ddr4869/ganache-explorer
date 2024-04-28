@@ -8,7 +8,7 @@ import (
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect/sql"
-	"github.com/ddr4869/ether-go/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/block"
 )
 
 // Block is the model entity for the Block schema.

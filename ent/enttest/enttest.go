@@ -5,12 +5,12 @@ package enttest
 import (
 	"context"
 
-	"github.com/ddr4869/ether-go/ent"
+	"github.com/ddr4869/ganache-explorer/ent"
 	// required by schema hooks.
-	_ "github.com/ddr4869/ether-go/ent/runtime"
+	_ "github.com/ddr4869/ganache-explorer/ent/runtime"
 
 	"entgo.io/ent/dialect/sql/schema"
-	"github.com/ddr4869/ether-go/ent/migrate"
+	"github.com/ddr4869/ganache-explorer/ent/migrate"
 )
 
 type (

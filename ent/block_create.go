@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ddr4869/ether-go/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/block"
 )
 
 // BlockCreate is the builder for creating a Block entity.

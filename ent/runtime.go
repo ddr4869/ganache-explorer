@@ -3,9 +3,9 @@
 package ent
 
 import (
-	"github.com/ddr4869/ether-go/ent/block"
-	"github.com/ddr4869/ether-go/ent/schema"
-	"github.com/ddr4869/ether-go/ent/transaction"
+	"github.com/ddr4869/ganache-explorer/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/schema"
+	"github.com/ddr4869/ganache-explorer/ent/transaction"
 )
 
 // The init function reads all schema descriptors with runtime code

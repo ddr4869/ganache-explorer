@@ -9,7 +9,7 @@ import (
 
 	"entgo.io/ent/dialect/sql/sqlgraph"
 	"entgo.io/ent/schema/field"
-	"github.com/ddr4869/ether-go/ent/transaction"
+	"github.com/ddr4869/ganache-explorer/ent/transaction"
 )
 
 // TransactionCreate is the builder for creating a Transaction entity.

@@ -9,13 +9,13 @@ import (
 	"log"
 	"reflect"
 
-	"github.com/ddr4869/ether-go/ent/migrate"
+	"github.com/ddr4869/ganache-explorer/ent/migrate"
 
 	"entgo.io/ent"
 	"entgo.io/ent/dialect"
 	"entgo.io/ent/dialect/sql"
-	"github.com/ddr4869/ether-go/ent/block"
-	"github.com/ddr4869/ether-go/ent/transaction"
+	"github.com/ddr4869/ganache-explorer/ent/block"
+	"github.com/ddr4869/ganache-explorer/ent/transaction"
 )
 
 // Client is the client that holds all ent builders.

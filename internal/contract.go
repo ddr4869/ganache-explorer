@@ -5,14 +5,13 @@ import (
 	"encoding/hex"
 	"fmt"
 	"log"
-	"math"
 	"math/big"
 	"net/http"
 
-	"github.com/ddr4869/ether-go/internal/dto"
-	"github.com/ddr4869/ether-go/solidity/store"
+	"github.com/ddr4869/ganache-explorer/internal/dto"
+	"github.com/ddr4869/ganache-explorer/solidity/store"
 
-	token "github.com/ddr4869/ether-go/solidity/erc20"
+	// token "github.com/ddr4869/ganache-explorer/solidity/erc20"
 	"github.com/ethereum/go-ethereum/accounts/abi/bind"
 	"github.com/ethereum/go-ethereum/common"
 	"github.com/gin-gonic/gin"
@@ -91,76 +90,76 @@ func (s *Server) WriteStoreContract(c *gin.Context) {
 
 // erc20
 
-func (s *Server) DeployErc20Contract(c *gin.Context) {
-	req := c.MustGet("req").(dto.DeployContractRequest)
-	auth, err := s.SetupKeyTransaction(req.From_private, 0)
+// func (s *Server) DeployErc20Contract(c *gin.Context) {
+// 	req := c.MustGet("req").(dto.DeployContractRequest)
+// 	auth, err := s.SetupKeyTransaction(req.From_private, 0)
 
-	token, tx, instance, err := token.DeployToken(auth, s.config.Client)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to deploy contract")
-		return
-	}
-	_ = instance
-	c.JSON(http.StatusOK, dto.DeployContractResponse{
-		Address: token.Hex(),
-		Hash:    tx.Hash(),
-	})
-}
+// 	token, tx, instance, err := token.DeployToken(auth, s.config.Client)
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusBadRequest, err, "Failed to deploy contract")
+// 		return
+// 	}
+// 	_ = instance
+// 	c.JSON(http.StatusOK, dto.DeployContractResponse{
+// 		Address: token.Hex(),
+// 		Hash:    tx.Hash(),
+// 	})
+// }
 
-func (s *Server) LoadErc20Contract(c *gin.Context) {
-	// Golem (GNT) Address
-	req := c.MustGet("req").(dto.LoadStoreContractRequest)
+// func (s *Server) LoadErc20Contract(c *gin.Context) {
+// 	// Golem (GNT) Address
+// 	req := c.MustGet("req").(dto.LoadStoreContractRequest)
 
-	tokenAddress := common.HexToAddress(req.Contract_address)
-	instance, err := token.NewToken(tokenAddress, s.config.Client)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 1")
-		return
-	}
-	address := common.HexToAddress("0xa74476443119A942dE498590Fe1f2454d7D4aC0d")
-	bal, err := instance.BalanceOf(&bind.CallOpts{}, address)
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 2")
-		return
-	}
+// 	tokenAddress := common.HexToAddress(req.Contract_address)
+// 	instance, err := token.NewToken(tokenAddress, s.config.Client)
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 1")
+// 		return
+// 	}
+// 	address := common.HexToAddress("0xa74476443119A942dE498590Fe1f2454d7D4aC0d")
+// 	bal, err := instance.BalanceOf(&bind.CallOpts{}, address)
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 2")
+// 		return
+// 	}
 
-	name, err := instance.Name(&bind.CallOpts{})
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 3")
-		return
-	}
+// 	name, err := instance.Name(&bind.CallOpts{})
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 3")
+// 		return
+// 	}
 
-	symbol, err := instance.Symbol(&bind.CallOpts{})
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 4")
-		return
-	}
+// 	symbol, err := instance.Symbol(&bind.CallOpts{})
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 4")
+// 		return
+// 	}
 
-	decimals, err := instance.Decimals(&bind.CallOpts{})
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 5")
-		return
-	}
+// 	decimals, err := instance.Decimals(&bind.CallOpts{})
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 5")
+// 		return
+// 	}
 
-	total, err := instance.TotalSupply(&bind.CallOpts{})
-	if err != nil {
-		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 5")
-		return
-	}
-	log.Printf("total supply : %v", total)
+// 	total, err := instance.TotalSupply(&bind.CallOpts{})
+// 	if err != nil {
+// 		dto.NewErrorResponse(c, http.StatusInternalServerError, err, "Failed to create token 5")
+// 		return
+// 	}
+// 	log.Printf("total supply : %v", total)
 
-	fmt.Printf("name: %s\n", name)         // "name: Golem Network"
-	fmt.Printf("symbol: %s\n", symbol)     // "symbol: GNT"
-	fmt.Printf("decimals: %v\n", decimals) // "decimals: 18"
+// 	fmt.Printf("name: %s\n", name)         // "name: Golem Network"
+// 	fmt.Printf("symbol: %s\n", symbol)     // "symbol: GNT"
+// 	fmt.Printf("decimals: %v\n", decimals) // "decimals: 18"
 
-	fmt.Printf("wei: %s\n", bal) // "wei: 74605500647408739782407023"
+// 	fmt.Printf("wei: %s\n", bal) // "wei: 74605500647408739782407023"
 
-	fbal := new(big.Float)
-	fbal.SetString(bal.String())
-	value := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
+// 	fbal := new(big.Float)
+// 	fbal.SetString(bal.String())
+// 	value := new(big.Float).Quo(fbal, big.NewFloat(math.Pow10(int(decimals))))
 
-	fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
-}
+// 	fmt.Printf("balance: %f", value) // "balance: 74605500.647409"
+// }
 
 // deploy contract
 func (s *Server) SetupKeyTransaction(private_key string, gas_limit int) (*bind.TransactOpts, error) {
